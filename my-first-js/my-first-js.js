@@ -25,3 +25,19 @@ for (i=1;i<=50;i++) {
 }
 document.write(sum);
 
+
+function myFunc(theObject) {
+  theObject.make = "Toyota";
+}
+
+const myCar = {
+  make: "Honda",
+  model: "Accord",
+  year: 1998,
+};
+
+console.log(myCar.make);
+myFunc(myCar);
+console.log(myCar.make);
+console.error("error error");
+console.warn("STOP alert");
