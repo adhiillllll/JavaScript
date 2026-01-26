@@ -26,6 +26,9 @@ for (i=1;i<=50;i++) {
 document.write(sum);
 
 
+
+
+//function
 function myFunc(theObject) {
   theObject.make = "Toyota";
 }

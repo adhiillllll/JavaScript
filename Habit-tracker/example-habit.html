@@ -6,10 +6,77 @@
 <title>Habit Tracker</title>
 
 
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #111;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        background: #222;
+        padding: 20px;
+        border-radius: 10px;
+        width: 350px;
+        text-align: center;
+        box-shadow: 0 0 10px #00ff88;
+    }
+
+    input {
+        padding: 8px;
+        width: 70%;
+        border: none;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 8px 12px;
+        background: #00ff88;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    li {
+        background: #333;
+        margin: 5px 0;
+        padding: 8px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .done {
+        text-decoration: line-through;
+        color: #00ff88;
+    }
+
+    .delete {
+        background: red;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+
+
 </head>
 <body>
 
-    <scrip src="example.js"></scrip>
 
 <div class="container">
     <h2>Daily Habit Tracker</h2>
@@ -23,6 +90,7 @@
 </div>
 
 
+<script src="example-habit.js"></script>
 
 
 </body>
