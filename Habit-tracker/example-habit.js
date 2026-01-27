@@ -1,74 +1,91 @@
-// Load habits when page opens
-    window.onload = loadHabits;
+// Run when page loads
+window.onload = loadHabits;
 
-    function addHabit() {
-        let input = document.getElementById("habitInput");
-        let habitText = input.value.trim();
+const input = document.getElementById("habitInput");
+const addBtn = document.getElementById("addBtn");
 
-        if (habitText === "") {
-            alert("Please enter a habit!");
-            return;
+addBtn.addEventListener("click", addHabit);
+
+// Add habit by pressing Enter key
+input.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        addHabit();
+    }
+});
+
+function addHabit() {
+    const text = input.value.trim();
+    if (text === "") return;
+
+    const habits = getHabits();
+    habits.push({ text: text, completed: false });
+
+    saveHabits(habits);
+    input.value = "";
+    loadHabits();
+}
+
+function loadHabits() {
+    const list = document.getElementById("habitList");
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+
+    list.innerHTML = "";
+
+    const habits = getHabits();
+    let completedCount = 0;
+
+    habits.forEach((habit, index) => {
+        const li = document.createElement("li");
+
+        const span = document.createElement("span");
+        span.innerText = habit.text;
+
+        if (habit.completed) {
+            span.classList.add("done");
+            completedCount++;
         }
 
-        let habits = getHabits();
-        habits.push({ text: habitText, completed: false });
+        // Toggle complete
+        span.onclick = () => toggleHabit(index);
 
-        saveHabits(habits);
-        input.value = "";
-        loadHabits();
-    }
+        // Delete button
+        const delBtn = document.createElement("button");
+        delBtn.innerText = "X";
+        delBtn.className = "delete";
+        delBtn.onclick = () => deleteHabit(index);
 
-    function loadHabits() {
-        let list = document.getElementById("habitList");
-        let count = document.getElementById("count");
-        list.innerHTML = "";
+        li.appendChild(span);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+    });
 
-        let habits = getHabits();
-        count.innerText = habits.length;
+    // Update progress
+    const total = habits.length;
+    const percent = total === 0 ? 0 : (completedCount / total) * 100;
+    progressBar.style.width = percent + "%";
+    progressText.innerText = `${completedCount} / ${total} Completed`;
+}
 
-        habits.forEach((habit, index) => {
-            let li = document.createElement("li");
+function toggleHabit(index) {
+    const habits = getHabits();
+    habits[index].completed = !habits[index].completed;
+    saveHabits(habits);
+    loadHabits();
+}
 
-            let span = document.createElement("span");
-            span.innerText = habit.text;
-            if (habit.completed) span.classList.add("done");
+function deleteHabit(index) {
+    const habits = getHabits();
+    habits.splice(index, 1);
+    saveHabits(habits);
+    loadHabits();
+}
 
-            span.onclick = function() {
-                toggleHabit(index);
-            };
+function getHabits() {
+    const data = localStorage.getItem("habits");
+    return data ? JSON.parse(data) : [];
+}
 
-            let delBtn = document.createElement("button");
-            delBtn.innerText = "X";
-            delBtn.className = "delete";
-            delBtn.onclick = function() {
-                deleteHabit(index);
-            };
-
-            li.appendChild(span);
-            li.appendChild(delBtn);
-            list.appendChild(li);
-        });
-    }
-
-    function toggleHabit(index) {
-        let habits = getHabits();
-        habits[index].completed = !habits[index].completed;
-        saveHabits(habits);
-        loadHabits();
-    }
-
-    function deleteHabit(index) {
-        let habits = getHabits();
-        habits.splice(index, 1);
-        saveHabits(habits);
-        loadHabits();
-    }
-
-    function getHabits() {
-        let data = localStorage.getItem("habits");
-        return data ? JSON.parse(data) : [];
-    }
-
-    function saveHabits(habits) {
-        localStorage.setItem("habits", JSON.stringify(habits));
-    }
+function saveHabits(habits) {
+    localStorage.setItem("habits", JSON.stringify(habits));
+}
