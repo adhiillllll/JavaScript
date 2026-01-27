@@ -4,94 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Habit Tracker</title>
-
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #111;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        background: #222;
-        padding: 20px;
-        border-radius: 10px;
-        width: 350px;
-        text-align: center;
-        box-shadow: 0 0 10px #00ff88;
-    }
-
-    input {
-        padding: 8px;
-        width: 70%;
-        border: none;
-        border-radius: 5px;
-    }
-
-    button {
-        padding: 8px 12px;
-        background: #00ff88;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-        margin-top: 20px;
-    }
-
-    li {
-        background: #333;
-        margin: 5px 0;
-        padding: 8px;
-        border-radius: 5px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .done {
-        text-decoration: line-through;
-        color: #00ff88;
-    }
-
-    .delete {
-        background: red;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-</style>
-
-
+<link rel="stylesheet" href="example-habit.css">
 </head>
 <body>
 
 
-<div class="container">
-    <h2>Daily Habit Tracker</h2>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+}
 
-    <input type="text" id="habitInput" placeholder="Enter new habit">
-    <button onclick="addHabit()">Add</button>
+.container {
+    background: #1e1e1e;
+    padding: 25px;
+    width: 380px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00ff88;
+    text-align: center;
+}
+
+.input-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+button {
+    background: #00ff88;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00cc6a;
+}
+
+.progress-box {
+    background: #333;
+    height: 8px;
+    border-radius: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+#progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #00ff88;
+    transition: width 0.4s ease;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+li {
+    background: #2a2a2a;
+    margin: 6px 0;
+    padding: 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+li span {
+    cursor: pointer;
+}
+
+.done {
+    text-decoration: line-through;
+    color: #00ff88;
+}
+
+.delete {
+    background: red;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-5px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+</style>
+
+
+<div class="container">
+    <h2>🌱 Daily Habit Tracker</h2>
+
+    <div class="input-box">
+        <input type="text" id="habitInput" placeholder="Enter new habit...">
+        <button id="addBtn">Add</button>
+    </div>
+
+    <div class="progress-box">
+        <div id="progress-bar"></div>
+    </div>
+    <p id="progress-text">0 / 0 Completed</p>
 
     <ul id="habitList"></ul>
-
-    <p>Total Habits: <span id="count">0</span></p>
 </div>
 
-
 <script src="example-habit.js"></script>
-
-
 </body>
 </html>
