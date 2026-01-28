@@ -4,64 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Habit Tracker</title>
-<link rel="stylesheet" href="example-habit.css">
 </head>
 <body>
 
 
+
 <style>
-body {
+    * {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     font-family: Arial, sans-serif;
+}
+
+body {
     background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     color: white;
+    padding: 15px;
 }
 
-.container {
+/* App Container */
+.app {
+    width: 100%;
+    max-width: 420px;
     background: #1e1e1e;
-    padding: 25px;
-    width: 380px;
-    border-radius: 12px;
+    border-radius: 15px;
+    padding: 20px;
     box-shadow: 0 0 20px #00ff88;
-    text-align: center;
 }
 
-.input-box {
+/* Title */
+h1 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Input Area */
+.input-area {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
 }
 
-input {
+.input-area input {
     flex: 1;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     border: none;
     outline: none;
+    font-size: 16px;
 }
 
-button {
-    background: #00ff88;
+.input-area button {
+    padding: 12px 16px;
     border: none;
-    padding: 10px 15px;
-    border-radius: 6px;
+    border-radius: 8px;
+    background: #00ff88;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 }
 
-button:hover {
+.input-area button:hover {
     background: #00cc6a;
 }
 
-.progress-box {
+/* Progress */
+.progress-area {
+    margin-bottom: 15px;
+}
+
+.progress-bar-bg {
     background: #333;
     height: 8px;
     border-radius: 10px;
-    margin: 10px 0;
     overflow: hidden;
 }
 
@@ -72,25 +92,31 @@ button:hover {
     transition: width 0.4s ease;
 }
 
+#progress-text {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* Habit List */
 ul {
     list-style: none;
-    padding: 0;
-    margin-top: 15px;
 }
 
 li {
     background: #2a2a2a;
-    margin: 6px 0;
-    padding: 10px;
-    border-radius: 6px;
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    animation: fadeIn 0.3s ease;
+    animation: slideIn 0.3s ease;
 }
 
 li span {
     cursor: pointer;
+    font-size: 15px;
 }
 
 .done {
@@ -102,31 +128,53 @@ li span {
     background: red;
     border: none;
     color: white;
-    border-radius: 4px;
     padding: 4px 8px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-5px);}
-    to {opacity: 1; transform: translateY(0);}
+/* Small Animation */
+@keyframes slideIn {
+    from {opacity:0; transform: translateY(-5px);}
+    to {opacity:1; transform: translateY(0);}
 }
 
+/* 💻 Tablet and Desktop */
+@media (min-width: 768px) {
+    body {
+        padding: 40px;
+    }
+
+    .app {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    li span {
+        font-size: 16px;
+    }
+}
 </style>
 
 
-<div class="container">
-    <h2>🌱 Daily Habit Tracker</h2>
 
-    <div class="input-box">
-        <input type="text" id="habitInput" placeholder="Enter new habit...">
-        <button id="addBtn">Add</button>
+<div class="app">
+    <h1>🌱 Habit Tracker</h1>
+
+    <div class="input-area">
+        <input type="text" id="habitInput" placeholder="Add new habit...">
+        <button id="addBtn">+</button>
     </div>
 
-    <div class="progress-box">
-        <div id="progress-bar"></div>
+    <div class="progress-area">
+        <div class="progress-bar-bg">
+            <div id="progress-bar"></div>
+        </div>
+        <p id="progress-text">0 / 0 Completed</p>
     </div>
-    <p id="progress-text">0 / 0 Completed</p>
 
     <ul id="habitList"></ul>
 </div>
