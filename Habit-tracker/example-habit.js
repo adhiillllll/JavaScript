@@ -1,4 +1,3 @@
-// Run when page loads
 window.onload = loadHabits;
 
 const input = document.getElementById("habitInput");
@@ -6,11 +5,8 @@ const addBtn = document.getElementById("addBtn");
 
 addBtn.addEventListener("click", addHabit);
 
-// Add habit by pressing Enter key
-input.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        addHabit();
-    }
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addHabit();
 });
 
 function addHabit() {
@@ -18,7 +14,7 @@ function addHabit() {
     if (text === "") return;
 
     const habits = getHabits();
-    habits.push({ text: text, completed: false });
+    habits.push({ text, completed: false });
 
     saveHabits(habits);
     input.value = "";
@@ -31,8 +27,8 @@ function loadHabits() {
     const progressText = document.getElementById("progress-text");
 
     list.innerHTML = "";
-
     const habits = getHabits();
+
     let completedCount = 0;
 
     habits.forEach((habit, index) => {
@@ -40,16 +36,13 @@ function loadHabits() {
 
         const span = document.createElement("span");
         span.innerText = habit.text;
-
         if (habit.completed) {
             span.classList.add("done");
             completedCount++;
         }
 
-        // Toggle complete
         span.onclick = () => toggleHabit(index);
 
-        // Delete button
         const delBtn = document.createElement("button");
         delBtn.innerText = "X";
         delBtn.className = "delete";
@@ -60,7 +53,7 @@ function loadHabits() {
         list.appendChild(li);
     });
 
-    // Update progress
+    // Progress update
     const total = habits.length;
     const percent = total === 0 ? 0 : (completedCount / total) * 100;
     progressBar.style.width = percent + "%";
