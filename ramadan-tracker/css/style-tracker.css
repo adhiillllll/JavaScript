@@ -1,0 +1,138 @@
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background:#e5e5e5;
+    display:flex;
+    justify-content:center;
+    padding:15px;
+}
+
+/* Phone Frame */
+.phone {
+    width:100%;
+    max-width:390px;
+    background:#fff;
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+}
+
+/* Header */
+.header {
+    background:#3f45e5;
+    color:white;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header.simple {
+    justify-content:center;
+}
+
+.time {
+    font-size:20px;
+    font-weight:bold;
+}
+
+.subtitle {
+    font-size:12px;
+    opacity:0.8;
+}
+
+.avatar {
+    width:35px;
+    border-radius:50%;
+}
+
+/* Quick Action Grid */
+.card-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    padding:15px;
+}
+
+.card {
+    background:#f3f3f3;
+    padding:12px 5px;
+    text-align:center;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:500;
+}
+
+/* Progress Card */
+.progress-card {
+    margin:5px 15px;
+    background:#f8f8f8;
+    border-radius:15px;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.circle {
+    width:65px;
+    height:65px;
+    border-radius:50%;
+    background:#3f45e5;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* Habit List */
+.habit-list {
+    padding:10px 15px 90px;
+}
+
+.habit-item {
+    background:#fff;
+    border-bottom:1px solid #eee;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+}
+
+.check {
+    width:22px;
+    height:22px;
+    border:2px solid #3f45e5;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.check.done {
+    background:#3f45e5;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position:fixed;
+    bottom:0;
+    width:100%;
+    max-width:390px;
+    background:#fff;
+    display:flex;
+    justify-content:space-around;
+    padding:12px;
+    border-top:1px solid #ddd;
+}
+
+.bottom-nav a {
+    text-decoration:none;
+    color:#777;
+    font-size:12px;
+}
