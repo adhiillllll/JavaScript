@@ -3,22 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Habit Tracker</title>
-</head>
-<body>
-
-
+<title>Habit Tracker Pro</title>
 
 <style>
-    * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #0B132B, #1C2541);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -27,59 +23,55 @@ body {
     padding: 15px;
 }
 
-/* App Container */
 .app {
     width: 100%;
-    max-width: 420px;
-    background: #1e1e1e;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 0 20px #00ff88;
+    max-width: 430px;
+    background: #1C2541;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 0 25px rgba(91,192,190,0.4);
 }
 
-/* Title */
 h1 {
     text-align: center;
+    margin-bottom: 5px;
+}
+
+#clock {
+    text-align: center;
+    font-size: 14px;
+    color: #5BC0BE;
     margin-bottom: 15px;
 }
 
-/* Input Area */
+/* Input */
 .input-area {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 15px;
 }
 
-.input-area input {
+.input-area input,
+.input-area input[type="time"] {
     flex: 1;
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     border: none;
     outline: none;
-    font-size: 16px;
 }
 
 .input-area button {
-    padding: 12px 16px;
-    border: none;
+    padding: 10px 14px;
     border-radius: 8px;
-    background: #00ff88;
-    font-size: 18px;
-    font-weight: bold;
+    border: none;
+    background: #5BC0BE;
+    font-size: 20px;
     cursor: pointer;
 }
 
-.input-area button:hover {
-    background: #00cc6a;
-}
-
 /* Progress */
-.progress-area {
-    margin-bottom: 15px;
-}
-
 .progress-bar-bg {
-    background: #333;
+    background: #3A506B;
     height: 8px;
     border-radius: 10px;
     overflow: hidden;
@@ -88,84 +80,67 @@ h1 {
 #progress-bar {
     height: 100%;
     width: 0%;
-    background: #00ff88;
+    background: #FDE74C;
     transition: width 0.4s ease;
 }
 
 #progress-text {
     text-align: center;
+    font-size: 13px;
     margin-top: 5px;
-    font-size: 14px;
 }
 
-/* Habit List */
+/* List */
 ul {
     list-style: none;
+    margin-top: 15px;
 }
 
 li {
-    background: #2a2a2a;
-    margin: 8px 0;
+    background: #3A506B;
+    margin-bottom: 8px;
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    animation: slideIn 0.3s ease;
 }
 
 li span {
     cursor: pointer;
-    font-size: 15px;
 }
 
 .done {
     text-decoration: line-through;
-    color: #00ff88;
+    color: #5BC0BE;
+}
+
+.time {
+    font-size: 11px;
+    color: #FDE74C;
+    margin-left: 6px;
 }
 
 .delete {
-    background: red;
+    background: #EF476F;
     border: none;
     color: white;
-    padding: 4px 8px;
-    border-radius: 5px;
+    padding: 5px 8px;
+    border-radius: 6px;
     cursor: pointer;
 }
-
-/* Small Animation */
-@keyframes slideIn {
-    from {opacity:0; transform: translateY(-5px);}
-    to {opacity:1; transform: translateY(0);}
-}
-
-/* 💻 Tablet and Desktop */
-@media (min-width: 768px) {
-    body {
-        padding: 40px;
-    }
-
-    .app {
-        padding: 30px;
-    }
-
-    h1 {
-        font-size: 26px;
-    }
-
-    li span {
-        font-size: 16px;
-    }
-}
 </style>
+</head>
 
-
+<body>
 
 <div class="app">
     <h1>🌱 Habit Tracker</h1>
+    <div id="clock"></div>
 
     <div class="input-area">
-        <input type="text" id="habitInput" placeholder="Add new habit...">
+        <input type="text" id="habitInput" placeholder="New habit...">
+        <input type="time" id="habitTime">
         <button id="addBtn">+</button>
     </div>
 
