@@ -1,23 +1,30 @@
-window.onload = loadHabits;
+window.onload = () => {
+    loadHabits();
+    startClock();
+    setInterval(checkReminders, 60000);
+};
 
 const input = document.getElementById("habitInput");
+const timeInput = document.getElementById("habitTime");
 const addBtn = document.getElementById("addBtn");
 
-addBtn.addEventListener("click", addHabit);
-
-input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addHabit();
-});
+addBtn.onclick = addHabit;
 
 function addHabit() {
     const text = input.value.trim();
-    if (text === "") return;
+    const time = timeInput.value;
+
+    if (!text) {
+        alert("Please enter a habit!");
+        return;
+    }
 
     const habits = getHabits();
-    habits.push({ text, completed: false });
+    habits.push({ text, completed: false, time });
 
     saveHabits(habits);
     input.value = "";
+    timeInput.value = "";
     loadHabits();
 }
 
@@ -28,57 +35,79 @@ function loadHabits() {
 
     list.innerHTML = "";
     const habits = getHabits();
+    let completed = 0;
 
-    let completedCount = 0;
-
-    habits.forEach((habit, index) => {
+    habits.forEach((h, i) => {
         const li = document.createElement("li");
 
         const span = document.createElement("span");
-        span.innerText = habit.text;
-        if (habit.completed) {
+        span.innerText = h.text;
+        if (h.completed) {
             span.classList.add("done");
-            completedCount++;
+            completed++;
+        }
+        span.onclick = () => toggleHabit(i);
+
+        if (h.time) {
+            const timeSpan = document.createElement("span");
+            timeSpan.className = "time";
+            timeSpan.innerText = `⏰ ${h.time}`;
+            span.appendChild(timeSpan);
         }
 
-        span.onclick = () => toggleHabit(index);
+        const del = document.createElement("button");
+        del.innerText = "X";
+        del.className = "delete";
+        del.onclick = () => deleteHabit(i);
 
-        const delBtn = document.createElement("button");
-        delBtn.innerText = "X";
-        delBtn.className = "delete";
-        delBtn.onclick = () => deleteHabit(index);
-
-        li.appendChild(span);
-        li.appendChild(delBtn);
+        li.append(span, del);
         list.appendChild(li);
     });
 
-    // Progress update
-    const total = habits.length;
-    const percent = total === 0 ? 0 : (completedCount / total) * 100;
+    const percent = habits.length ? (completed / habits.length) * 100 : 0;
     progressBar.style.width = percent + "%";
-    progressText.innerText = `${completedCount} / ${total} Completed`;
+    progressText.innerText = `${completed} / ${habits.length} Completed`;
 }
 
-function toggleHabit(index) {
+function toggleHabit(i) {
     const habits = getHabits();
-    habits[index].completed = !habits[index].completed;
+    habits[i].completed = !habits[i].completed;
     saveHabits(habits);
     loadHabits();
 }
 
-function deleteHabit(index) {
+function deleteHabit(i) {
     const habits = getHabits();
-    habits.splice(index, 1);
+    habits.splice(i, 1);
     saveHabits(habits);
     loadHabits();
+}
+
+/* Clock */
+function startClock() {
+    const clock = document.getElementById("clock");
+    setInterval(() => {
+        const now = new Date();
+        clock.innerText = now.toLocaleTimeString();
+    }, 1000);
+}
+
+/* Reminder */
+function checkReminders() {
+    const habits = getHabits();
+    const now = new Date().toTimeString().slice(0,5);
+
+    habits.forEach(h => {
+        if (h.time === now && !h.completed) {
+            alert(`⏰ Reminder: ${h.text}`);
+        }
+    });
 }
 
 function getHabits() {
-    const data = localStorage.getItem("habits");
-    return data ? JSON.parse(data) : [];
+    return JSON.parse(localStorage.getItem("habits")) || [];
 }
 
-function saveHabits(habits) {
-    localStorage.setItem("habits", JSON.stringify(habits));
+function saveHabits(h) {
+    localStorage.setItem("habits", JSON.stringify(h));
 }
