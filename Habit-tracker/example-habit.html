@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Habit Tracker Pro</title>
+<title>Habit Tracker</title>
 
 <style>
 * {
@@ -14,37 +14,46 @@
 }
 
 body {
-    background: linear-gradient(135deg, #0B132B, #1C2541);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    background: #000;
     padding: 15px;
 }
 
+/* ================= APP (MOBILE FIRST) ================= */
+/* 📱 MOBILE → MOUNTAIN IMAGE */
 .app {
     width: 100%;
-    max-width: 430px;
-    background: #1C2541;
+    max-width: 420px;
     border-radius: 18px;
     padding: 22px;
-    box-shadow: 0 0 25px rgba(91,192,190,0.4);
+    color: white;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url("img-habit/download.png"); /* 🏔️ mountain */
+
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
+/* ================= TITLE ================= */
 h1 {
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 #clock {
     text-align: center;
     font-size: 14px;
-    color: #5BC0BE;
+    opacity: 0.9;
     margin-bottom: 15px;
 }
 
-/* Input */
+/* ================= INPUT ================= */
 .input-area {
     display: flex;
     gap: 8px;
@@ -64,14 +73,14 @@ h1 {
     padding: 10px 14px;
     border-radius: 8px;
     border: none;
-    background: #5BC0BE;
+    background: #00ff88;
     font-size: 20px;
     cursor: pointer;
 }
 
-/* Progress */
+/* ================= PROGRESS ================= */
 .progress-bar-bg {
-    background: #3A506B;
+    background: rgba(255,255,255,0.3);
     height: 8px;
     border-radius: 10px;
     overflow: hidden;
@@ -80,7 +89,7 @@ h1 {
 #progress-bar {
     height: 100%;
     width: 0%;
-    background: #FDE74C;
+    background: #00ff88;
     transition: width 0.4s ease;
 }
 
@@ -90,14 +99,14 @@ h1 {
     margin-top: 5px;
 }
 
-/* List */
+/* ================= LIST ================= */
 ul {
     list-style: none;
     margin-top: 15px;
 }
 
 li {
-    background: #3A506B;
+    background: rgba(0,0,0,0.45);
     margin-bottom: 8px;
     padding: 12px;
     border-radius: 10px;
@@ -112,22 +121,37 @@ li span {
 
 .done {
     text-decoration: line-through;
-    color: #5BC0BE;
+    color: #00ff88;
 }
 
 .time {
     font-size: 11px;
-    color: #FDE74C;
     margin-left: 6px;
+    opacity: 0.8;
 }
 
 .delete {
-    background: #EF476F;
+    background: red;
     border: none;
     color: white;
     padding: 5px 8px;
     border-radius: 6px;
     cursor: pointer;
+}
+
+/* ================= RESPONSIVE SWITCH ================= */
+/* 💻 TABLET / DESKTOP → FOREST IMAGE */
+@media (min-width: 768px) {
+    .app {
+        max-width: 520px;
+
+        background:
+            linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+            url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg"); /* 🌲 forest */
+
+        background-size: cover;
+        background-position: center;
+    }
 }
 </style>
 </head>
