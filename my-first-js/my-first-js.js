@@ -1,46 +1,39 @@
- 
- //for loop
- for( i=1 ; i<=30 ; i++ ) {
-    if (i%3 == 0 && i%5 == 0)
-    document.write (i + " = fizz - buzz "+"<br>");
-    else if ( i % 3 == 0)
-    document.write (i +" = fizz "+ "<br>");
-    else if (i %5 == 0)
-    document.write (i + " = buzz"+"<br>");
-   
-    
- }
-
-
-
- // sum
-let sum = 0;
-
-for (i=1;i<=50;i++) {
-    if (i%2==0){
-     sum+=i ;
-
-    }
-
-}
-document.write(sum);
-
-
-
-
-//function
-function myFunc(theObject) {
-  theObject.make = "Toyota";
-}
-
-const myCar = {
-  make: "Honda",
-  model: "Accord",
-  year: 1998,
+// Check login when page loads
+window.onload = function () {
+  checkLogin();
 };
 
-console.log(myCar.make);
-myFunc(myCar);
-console.log(myCar.make);
-console.error("error error");
-console.warn("STOP alert");
+function login() {
+  const username = document.getElementById("username").value;
+
+  if (username === "") {
+    alert("Please enter username");
+    return;
+  }
+
+  // Save to localStorage
+  localStorage.setItem("user", username);
+  localStorage.setItem("isLoggedIn", "true");
+
+  checkLogin();
+}
+
+function logout() {
+  localStorage.removeItem("user");
+  localStorage.removeItem("isLoggedIn");
+
+  document.getElementById("status").innerText = "Not logged in";
+}
+
+function checkLogin() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const user = localStorage.getItem("user");
+
+  if (isLoggedIn === "true") {
+    document.getElementById("status").innerText =
+      "Logged in as " + user;
+  } else {
+    document.getElementById("status").innerText =
+      "Not logged in";
+  }
+}
