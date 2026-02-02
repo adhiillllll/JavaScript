@@ -23,21 +23,46 @@ body {
 }
 
 /* ================= APP (MOBILE FIRST) ================= */
-/* 📱 MOBILE → MOUNTAIN IMAGE */
 .app {
     width: 100%;
     max-width: 420px;
     border-radius: 18px;
     padding: 22px;
     color: white;
+    position: relative;
 
+    /* LIGHT MODE DEFAULT → MOUNTAIN */
     background:
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-        url("img-habit/download.png"); /* 🏔️ mountain */
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url("img-habit/download.png");
 
     background-size: cover;
     background-position: center;
     box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* DARK MODE → FOREST */
+.app.dark {
+    background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
+
+    background-size: cover;
+    background-position: center;
+}
+
+/* ================= TOGGLE ================= */
+.theme-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.5);
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 /* ================= TITLE ================= */
@@ -139,18 +164,10 @@ li span {
     cursor: pointer;
 }
 
-/* ================= RESPONSIVE SWITCH ================= */
-/* 💻 TABLET / DESKTOP → FOREST IMAGE */
+/* ================= DESKTOP ENHANCEMENT ================= */
 @media (min-width: 768px) {
     .app {
         max-width: 520px;
-
-        background:
-            linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
-            url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg"); /* 🌲 forest */
-
-        background-size: cover;
-        background-position: center;
     }
 }
 </style>
@@ -158,7 +175,9 @@ li span {
 
 <body>
 
-<div class="app">
+<div class="app" id="app">
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
     <h1>🌱 Habit Tracker</h1>
     <div id="clock"></div>
 
