@@ -1,23 +1,41 @@
 window.onload = () => {
     loadHabits();
     startClock();
+    loadTheme();
+    requestNotificationPermission();
     setInterval(checkReminders, 60000);
 };
 
 const input = document.getElementById("habitInput");
 const timeInput = document.getElementById("habitTime");
 const addBtn = document.getElementById("addBtn");
+const app = document.getElementById("app");
+const toggleBtn = document.getElementById("themeToggle");
 
+/* ================= THEME ================= */
+toggleBtn.onclick = () => {
+    app.classList.toggle("dark");
+    const isDark = app.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    toggleBtn.innerText = isDark ? "☀️" : "🌙";
+};
+
+function loadTheme() {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+        app.classList.add("dark");
+        toggleBtn.innerText = "☀️";
+    }
+}
+
+/* ================= HABITS ================= */
 addBtn.onclick = addHabit;
 
 function addHabit() {
     const text = input.value.trim();
     const time = timeInput.value;
 
-    if (!text) {
-        alert("Please enter a habit!");
-        return;
-    }
+    if (!text) return;
 
     const habits = getHabits();
     habits.push({ text, completed: false, time });
@@ -49,10 +67,10 @@ function loadHabits() {
         span.onclick = () => toggleHabit(i);
 
         if (h.time) {
-            const timeSpan = document.createElement("span");
-            timeSpan.className = "time";
-            timeSpan.innerText = `⏰ ${h.time}`;
-            span.appendChild(timeSpan);
+            const t = document.createElement("span");
+            t.className = "time";
+            t.innerText = `⏰ ${h.time}`;
+            span.appendChild(t);
         }
 
         const del = document.createElement("button");
@@ -83,27 +101,38 @@ function deleteHabit(i) {
     loadHabits();
 }
 
-/* Clock */
+/* ================= CLOCK ================= */
 function startClock() {
     const clock = document.getElementById("clock");
     setInterval(() => {
-        const now = new Date();
-        clock.innerText = now.toLocaleTimeString();
+        clock.innerText = new Date().toLocaleTimeString();
     }, 1000);
 }
 
-/* Reminder */
+/* ================= NOTIFICATIONS ================= */
+function requestNotificationPermission() {
+    if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+}
+
 function checkReminders() {
+    if (Notification.permission !== "granted") return;
+
+    const now = new Date().toTimeString().slice(0, 5);
     const habits = getHabits();
-    const now = new Date().toTimeString().slice(0,5);
 
     habits.forEach(h => {
         if (h.time === now && !h.completed) {
-            alert(`⏰ Reminder: ${h.text}`);
+            new Notification("Habit Reminder 🌱", {
+                body: h.text,
+                icon: "img-habit/download.png"
+            });
         }
     });
 }
 
+/* ================= STORAGE ================= */
 function getHabits() {
     return JSON.parse(localStorage.getItem("habits")) || [];
 }
