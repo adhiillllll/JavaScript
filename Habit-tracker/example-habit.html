@@ -7,168 +7,172 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
 }
 
 body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #000;
-    padding: 15px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
 }
 
-/* ================= APP (MOBILE FIRST) ================= */
+/* APP */
 .app {
-    width: 100%;
-    max-width: 420px;
-    border-radius: 18px;
-    padding: 22px;
-    color: white;
-    position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 22px;
+  border-radius: 22px;
+  color: white;
+  position: relative;
 
-    /* LIGHT MODE DEFAULT → MOUNTAIN */
-    background:
-        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-        url("img-habit/download.png");
+  /* LIGHT MODE (default) */
+  background:
+    linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+    url("img-habit/download.png");
 
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,.7);
 }
 
-/* DARK MODE → FOREST */
+/* DARK MODE */
 .app.dark {
-    background:
-        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-        url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
-
-    background-size: cover;
-    background-position: center;
+  background:
+    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+    url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
-/* ================= TOGGLE ================= */
+/* THEME TOGGLE */
 .theme-toggle {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    color: white;
-    padding: 6px 10px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(0,0,0,.5);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-/* ================= TITLE ================= */
-h1 {
-    text-align: center;
-    margin-bottom: 6px;
+/* HEADER */
+header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 #clock {
-    text-align: center;
-    font-size: 14px;
-    opacity: 0.9;
-    margin-bottom: 15px;
+  font-size: 14px;
+  opacity: .8;
 }
 
-/* ================= INPUT ================= */
-.input-area {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+/* INPUT */
+.input-card {
+  background: rgba(255,255,255,.15);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 18px;
 }
 
-.input-area input,
-.input-area input[type="time"] {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
+.input-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
 }
 
-.input-area button {
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: none;
-    background: #00ff88;
-    font-size: 20px;
-    cursor: pointer;
+.add-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  background: #00ff88;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-/* ================= PROGRESS ================= */
-.progress-bar-bg {
-    background: rgba(255,255,255,0.3);
-    height: 8px;
-    border-radius: 10px;
-    overflow: hidden;
+/* PROGRESS */
+.progress {
+  margin-bottom: 18px;
+}
+
+.bar {
+  height: 8px;
+  background: rgba(255,255,255,.3);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 #progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #00ff88;
-    transition: width 0.4s ease;
+  height: 100%;
+  width: 0%;
+  background: #00ff88;
 }
 
 #progress-text {
-    text-align: center;
-    font-size: 13px;
-    margin-top: 5px;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 6px;
 }
 
-/* ================= LIST ================= */
+/* HABITS */
 ul {
-    list-style: none;
-    margin-top: 15px;
+  list-style: none;
 }
 
 li {
-    background: rgba(0,0,0,0.45);
-    margin-bottom: 8px;
-    padding: 12px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background: rgba(0,0,0,.45);
+  padding: 14px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-li span {
-    cursor: pointer;
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.done {
-    text-decoration: line-through;
-    color: #00ff88;
+/* CHECKBOX */
+.check {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #00ff88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.time {
-    font-size: 11px;
-    margin-left: 6px;
-    opacity: 0.8;
+.check.done {
+  background: #00ff88;
+  color: black;
+  font-weight: bold;
 }
 
-.delete {
-    background: red;
-    border: none;
-    color: white;
-    padding: 5px 8px;
-    border-radius: 6px;
-    cursor: pointer;
+.habit-text.done {
+  text-decoration: line-through;
+  opacity: .6;
 }
 
-/* ================= DESKTOP ENHANCEMENT ================= */
-@media (min-width: 768px) {
-    .app {
-        max-width: 520px;
-    }
+/* STREAK */
+.streak {
+  font-size: 12px;
+  opacity: .8;
 }
 </style>
 </head>
@@ -176,25 +180,24 @@ li span {
 <body>
 
 <div class="app" id="app">
-    <button class="theme-toggle" id="themeToggle">🌙</button>
+  <button class="theme-toggle" id="themeToggle">🌙</button>
 
+  <header>
     <h1>🌱 Habit Tracker</h1>
     <div id="clock"></div>
+  </header>
 
-    <div class="input-area">
-        <input type="text" id="habitInput" placeholder="New habit...">
-        <input type="time" id="habitTime">
-        <button id="addBtn">+</button>
-    </div>
+  <div class="input-card">
+    <input id="habitInput" placeholder="Add a habit…" />
+    <button class="add-btn" id="addBtn">Add Habit</button>
+  </div>
 
-    <div class="progress-area">
-        <div class="progress-bar-bg">
-            <div id="progress-bar"></div>
-        </div>
-        <p id="progress-text">0 / 0 Completed</p>
-    </div>
+  <div class="progress">
+    <div class="bar"><div id="progress-bar"></div></div>
+    <div id="progress-text">0 / 0 completed today</div>
+  </div>
 
-    <ul id="habitList"></ul>
+  <ul id="habitList"></ul>
 </div>
 
 <script src="example-habit.js"></script>
