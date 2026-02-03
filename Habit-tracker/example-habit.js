@@ -1,142 +1,141 @@
 window.onload = () => {
-    loadHabits();
-    startClock();
-    loadTheme();
-    requestNotificationPermission();
-    setInterval(checkReminders, 60000);
+  loadTheme();
+  resetIfNewDay();
+  loadHabits();
+  startClock();
 };
 
-const input = document.getElementById("habitInput");
-const timeInput = document.getElementById("habitTime");
+const habitInput = document.getElementById("habitInput");
 const addBtn = document.getElementById("addBtn");
 const app = document.getElementById("app");
-const toggleBtn = document.getElementById("themeToggle");
+const themeToggle = document.getElementById("themeToggle");
 
 /* ================= THEME ================= */
-toggleBtn.onclick = () => {
-    app.classList.toggle("dark");
-    const isDark = app.classList.contains("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-    toggleBtn.innerText = isDark ? "☀️" : "🌙";
+themeToggle.onclick = () => {
+  app.classList.toggle("dark");
+  const dark = app.classList.contains("dark");
+  localStorage.setItem("theme", dark ? "dark" : "light");
+  themeToggle.innerText = dark ? "☀️" : "🌙";
 };
 
 function loadTheme() {
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark") {
-        app.classList.add("dark");
-        toggleBtn.innerText = "☀️";
-    }
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    app.classList.add("dark");
+    themeToggle.innerText = "☀️";
+  }
 }
 
-/* ================= HABITS ================= */
-addBtn.onclick = addHabit;
-
-function addHabit() {
-    const text = input.value.trim();
-    const time = timeInput.value;
-
-    if (!text) return;
-
-    const habits = getHabits();
-    habits.push({ text, completed: false, time });
-
-    saveHabits(habits);
-    input.value = "";
-    timeInput.value = "";
-    loadHabits();
+/* ================= DATE UTILS ================= */
+function today() {
+  return new Date().toISOString().slice(0, 10);
 }
 
+function yesterday() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
+/* ================= ADD HABIT ================= */
+addBtn.onclick = () => {
+  const text = habitInput.value.trim();
+  if (!text) return;
+
+  const habits = getHabits();
+  habits.push({
+    text,
+    streak: 0,
+    lastDone: null,
+    doneToday: false
+  });
+
+  saveHabits(habits);
+  habitInput.value = "";
+  loadHabits();
+};
+
+/* ================= LOAD ================= */
 function loadHabits() {
-    const list = document.getElementById("habitList");
-    const progressBar = document.getElementById("progress-bar");
-    const progressText = document.getElementById("progress-text");
+  const list = document.getElementById("habitList");
+  const bar = document.getElementById("progress-bar");
+  const text = document.getElementById("progress-text");
 
-    list.innerHTML = "";
-    const habits = getHabits();
-    let completed = 0;
+  list.innerHTML = "";
+  const habits = getHabits();
+  let done = 0;
 
-    habits.forEach((h, i) => {
-        const li = document.createElement("li");
+  habits.forEach((h, i) => {
+    if (h.doneToday) done++;
 
-        const span = document.createElement("span");
-        span.innerText = h.text;
-        if (h.completed) {
-            span.classList.add("done");
-            completed++;
-        }
-        span.onclick = () => toggleHabit(i);
+    const li = document.createElement("li");
 
-        if (h.time) {
-            const t = document.createElement("span");
-            t.className = "time";
-            t.innerText = `⏰ ${h.time}`;
-            span.appendChild(t);
-        }
+    const left = document.createElement("div");
+    left.className = "left";
 
-        const del = document.createElement("button");
-        del.innerText = "X";
-        del.className = "delete";
-        del.onclick = () => deleteHabit(i);
+    const check = document.createElement("div");
+    check.className = "check" + (h.doneToday ? " done" : "");
+    check.innerText = h.doneToday ? "✓" : "";
+    check.onclick = () => toggleHabit(i);
 
-        li.append(span, del);
-        list.appendChild(li);
-    });
+    const span = document.createElement("span");
+    span.className = "habit-text" + (h.doneToday ? " done" : "");
+    span.innerText = h.text;
 
-    const percent = habits.length ? (completed / habits.length) * 100 : 0;
-    progressBar.style.width = percent + "%";
-    progressText.innerText = `${completed} / ${habits.length} Completed`;
+    left.append(check, span);
+
+    const streak = document.createElement("span");
+    streak.className = "streak";
+    streak.innerText = `🔥 ${h.streak}`;
+
+    li.append(left, streak);
+    list.appendChild(li);
+  });
+
+  bar.style.width = habits.length ? (done / habits.length) * 100 + "%" : "0%";
+  text.innerText = `${done} / ${habits.length} completed today`;
 }
 
+/* ================= TOGGLE ================= */
 function toggleHabit(i) {
-    const habits = getHabits();
-    habits[i].completed = !habits[i].completed;
-    saveHabits(habits);
-    loadHabits();
+  const habits = getHabits();
+  const h = habits[i];
+
+  if (!h.doneToday) {
+    h.streak = h.lastDone === yesterday() ? h.streak + 1 : 1;
+    h.lastDone = today();
+    h.doneToday = true;
+  }
+
+  saveHabits(habits);
+  loadHabits();
 }
 
-function deleteHabit(i) {
-    const habits = getHabits();
-    habits.splice(i, 1);
-    saveHabits(habits);
-    loadHabits();
+/* ================= DAILY RESET ================= */
+function resetIfNewDay() {
+  const habits = getHabits();
+  const t = today();
+
+  habits.forEach(h => {
+    if (h.lastDone !== t) h.doneToday = false;
+  });
+
+  saveHabits(habits);
 }
 
 /* ================= CLOCK ================= */
 function startClock() {
-    const clock = document.getElementById("clock");
-    setInterval(() => {
-        clock.innerText = new Date().toLocaleTimeString();
-    }, 1000);
-}
-
-/* ================= NOTIFICATIONS ================= */
-function requestNotificationPermission() {
-    if ("Notification" in window && Notification.permission !== "granted") {
-        Notification.requestPermission();
-    }
-}
-
-function checkReminders() {
-    if (Notification.permission !== "granted") return;
-
-    const now = new Date().toTimeString().slice(0, 5);
-    const habits = getHabits();
-
-    habits.forEach(h => {
-        if (h.time === now && !h.completed) {
-            new Notification("Habit Reminder 🌱", {
-                body: h.text,
-                icon: "img-habit/download.png"
-            });
-        }
-    });
+  const c = document.getElementById("clock");
+  setInterval(() => {
+    c.innerText = new Date().toLocaleTimeString("en-US");
+  }, 1000);
 }
 
 /* ================= STORAGE ================= */
 function getHabits() {
-    return JSON.parse(localStorage.getItem("habits")) || [];
+  return JSON.parse(localStorage.getItem("habits")) || [];
 }
 
 function saveHabits(h) {
-    localStorage.setItem("habits", JSON.stringify(h));
+  localStorage.setItem("habits", JSON.stringify(h));
 }
