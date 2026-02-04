@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Habit Tracker</title>
 
 <style>
@@ -15,29 +15,28 @@
 
 body {
   min-height: 100vh;
+  background: #000;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #000;
 }
 
 /* APP */
 .app {
   width: 100%;
   max-width: 420px;
-  height: 90vh;
-  padding: 22px;
-  border-radius: 22px;
+  height: 92vh;
+  padding: 18px;
+  border-radius: 24px;
   color: white;
-  position: relative;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   background:
     linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
     url("img-habit/download.png");
   background-size: cover;
-  background-position: center;
 }
 
 /* DARK MODE */
@@ -45,111 +44,105 @@ body {
   background:
     linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
     url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
-  background-size: cover;
-}
-
-/* THEME TOGGLE */
-.theme-toggle {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: rgba(0,0,0,.5);
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 50%;
-  cursor: pointer;
 }
 
 /* HEADER */
 header {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 #clock {
-  font-size: 14px;
+  font-size: 13px;
   opacity: .8;
 }
 
-/* INPUT */
-.input-card {
-  background: rgba(255,255,255,.15);
-  border-radius: 16px;
-  padding: 14px;
-  margin-bottom: 14px;
+/* THEME */
+.theme-toggle {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: rgba(0,0,0,.5);
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
-.input-card input {
-  width: 100%;
+/* ADD BAR (FIXED UX) */
+.add-bar {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.add-bar input {
+  flex: 1;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   outline: none;
 }
 
-.add-btn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
+.add-bar button {
+  width: 44px;
   border-radius: 14px;
   border: none;
   background: #00ff88;
-  font-size: 16px;
+  font-size: 22px;
   cursor: pointer;
 }
 
 /* PROGRESS */
 .progress {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .bar {
-  height: 8px;
-  background: rgba(255,255,255,.3);
+  height: 6px;
+  background: rgba(255,255,255,.25);
   border-radius: 10px;
-  overflow: hidden;
 }
 
 #progress-bar {
   height: 100%;
-  width: 0%;
   background: #00ff88;
+  width: 0%;
 }
 
 #progress-text {
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   margin-top: 6px;
 }
 
-/* HABIT LIST */
-.list-wrap {
+/* LIST */
+.list {
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
 }
 
 ul {
   list-style: none;
 }
 
-/* Elastic animation */
-@keyframes elasticIn {
-  0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
-  60%  { opacity: 1; transform: translateY(-6px) scale(1.03); }
-  100% { transform: translateY(0) scale(1); }
-}
-
+/* HABIT */
 li {
   background: rgba(0,0,0,.45);
   padding: 14px;
   border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 10px;
-  animation: elasticIn 0.45s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .left {
@@ -158,7 +151,7 @@ li {
   gap: 12px;
 }
 
-/* CHECKBOX */
+/* CHECK */
 .check {
   width: 22px;
   height: 22px;
@@ -167,40 +160,34 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
 
 .check.done {
   background: #00ff88;
   color: black;
-  font-weight: bold;
 }
 
-.habit-text.done {
+.habit.done {
   text-decoration: line-through;
   opacity: .6;
 }
 
-/* RIGHT SIDE */
-.right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* HEATMAP */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 4px;
 }
 
-.streak {
-  font-size: 12px;
-  opacity: .8;
+.day {
+  width: 100%;
+  padding-top: 100%;
+  background: rgba(255,255,255,.2);
+  border-radius: 3px;
 }
 
-.delete {
-  background: rgba(255,0,0,.85);
-  border: none;
-  color: white;
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  cursor: pointer;
+.day.done {
+  background: #00ff88;
 }
 </style>
 </head>
@@ -215,17 +202,18 @@ li {
     <div id="clock"></div>
   </header>
 
-  <div class="input-card">
-    <input id="habitInput" placeholder="Add a habit…" />
-    <button class="add-btn" id="addBtn">Add Habit</button>
+  <!-- BETTER ADD UI -->
+  <div class="add-bar">Tracker
+    <input id="habitInput" placeholder="Add habit…" />
+    <button id="addBtn">＋</button>
   </div>
 
   <div class="progress">
     <div class="bar"><div id="progress-bar"></div></div>
-    <div id="progress-text">0 / 0 completed today</div>
+    <div id="progress-text">0 / 0 today</div>
   </div>
 
-  <div class="list-wrap">
+  <div class="list">
     <ul id="habitList"></ul>
   </div>
 </div>
