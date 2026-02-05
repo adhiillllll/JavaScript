@@ -15,7 +15,7 @@
 
 body {
   min-height: 100vh;
-  background: #000;
+  background: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,24 +37,13 @@ body {
     linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
     url("img-habit/download.png");
   background-size: cover;
+  background-position: center;
 }
 
-/* DARK MODE */
 .app.dark {
   background:
     linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
     url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
-}
-
-/* HEADER */
-header {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-#clock {
-  font-size: 13px;
-  opacity: .8;
 }
 
 /* THEME */
@@ -62,35 +51,49 @@ header {
   position: absolute;
   top: 14px;
   right: 14px;
-  border: none;
   background: rgba(0,0,0,.5);
+  border: none;
   color: white;
   padding: 8px;
   border-radius: 50%;
   cursor: pointer;
 }
 
-/* ADD BAR (FIXED UX) */
+/* HEADER */
+header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+#clock {
+  font-size: 13px;
+  opacity: .85;
+}
+
+/* ADD BAR (SMALL WIDTH) */
 .add-bar {
   display: flex;
   gap: 8px;
-  margin: 12px 0;
+  margin: 10px auto;
+  max-width: 92%;
 }
 
 .add-bar input {
   flex: 1;
-  padding: 12px;
-  border-radius: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
   border: none;
   outline: none;
+  font-size: 14px;
 }
 
 .add-bar button {
-  width: 44px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   border: none;
   background: #00ff88;
-  font-size: 22px;
+  font-size: 20px;
   cursor: pointer;
 }
 
@@ -103,12 +106,14 @@ header {
   height: 6px;
   background: rgba(255,255,255,.25);
   border-radius: 10px;
+  overflow: hidden;
 }
 
 #progress-bar {
   height: 100%;
-  background: #00ff88;
   width: 0%;
+  background: #00ff88;
+  transition: width .4s ease;
 }
 
 #progress-text {
@@ -127,8 +132,11 @@ ul {
   list-style: none;
 }
 
-/* HABIT */
+/* 🌊 WATERFALL ANIMATION */
 li {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: waterfall .35s ease forwards;
   background: rgba(0,0,0,.45);
   padding: 14px;
   border-radius: 16px;
@@ -136,9 +144,16 @@ li {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: transform .15s ease, opacity .15s ease;
 }
 
+@keyframes waterfall {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ROW */
 .row {
   display: flex;
   justify-content: space-between;
@@ -160,6 +175,7 @@ li {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .check.done {
@@ -172,22 +188,47 @@ li {
   opacity: .6;
 }
 
-/* HEATMAP */
-.heatmap {
-  display: grid;
-  grid-template-columns: repeat(14, 1fr);
-  gap: 4px;
+/* RIGHT */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.streak {
+  font-size: 12px;
+  opacity: .85;
+}
+
+.delete {
+  background: rgba(255,0,0,.85);
+  border: none;
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* WEEKLY DOTS */
+.week {
+  display: flex;
+  gap: 6px;
 }
 
 .day {
-  width: 100%;
-  padding-top: 100%;
-  background: rgba(255,255,255,.2);
-  border-radius: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
 }
 
 .day.done {
   background: #00ff88;
+}
+
+.day.today {
+  outline: 2px solid #4da6ff;
 }
 </style>
 </head>
@@ -202,15 +243,14 @@ li {
     <div id="clock"></div>
   </header>
 
-  <!-- BETTER ADD UI -->
-  <div class="add-bar">Tracker
+  <div class="add-bar">
     <input id="habitInput" placeholder="Add habit…" />
     <button id="addBtn">＋</button>
   </div>
 
   <div class="progress">
     <div class="bar"><div id="progress-bar"></div></div>
-    <div id="progress-text">0 / 0 today</div>
+    <div id="progress-text">0 / 0 completed today</div>
   </div>
 
   <div class="list">
