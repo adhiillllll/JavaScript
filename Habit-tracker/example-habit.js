@@ -5,10 +5,11 @@ window.onload = () => {
   startClock();
 };
 
-const habitInput = document.getElementById("habitInput");
-const addBtn = document.getElementById("addBtn");
+/* DOM */
 const app = document.getElementById("app");
 const themeToggle = document.getElementById("themeToggle");
+const habitInput = document.getElementById("habitInput");
+const addBtn = document.getElementById("addBtn");
 
 /* THEME */
 themeToggle.onclick = () => {
@@ -25,18 +26,14 @@ function loadTheme() {
   }
 }
 
-/* DATE UTILS */
-const today = () => new Date().toISOString().slice(0,10);
+/* DATE HELPERS */
+const today = () => new Date().toISOString().slice(0, 10);
 
-function last7Days() {
-  const days = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0,10));
-  }
-  return days;
-}
+const daysAgo = (n) => {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+};
 
 /* ADD */
 addBtn.onclick = () => {
@@ -46,9 +43,9 @@ addBtn.onclick = () => {
   const habits = getHabits();
   habits.push({
     text,
+    doneToday: false,
     streak: 0,
     lastDone: null,
-    doneToday: false,
     history: {}
   });
 
@@ -65,77 +62,13 @@ function loadHabits() {
 
   list.innerHTML = "";
   const habits = getHabits();
-  let done = 0;
+  let doneCount = 0;
 
-  habits.forEach((h,i)=>{
-    if (h.doneToday) done++;window.onload = () => {
-  loadTheme();
-  resetIfNewDay();
-  loadHabits();
-  startClock();
-};
-
-const app = document.getElementById("app");
-const themeToggle = document.getElementById("themeToggle");
-const input = document.getElementById("habitInput");
-const addBtn = document.getElementById("addBtn");
-
-/* THEME */
-themeToggle.onclick = () => {
-  app.classList.toggle("dark");
-  localStorage.setItem("theme", app.classList.contains("dark") ? "dark" : "light");
-  themeToggle.innerText = app.classList.contains("dark") ? "☀️" : "🌙";
-};
-
-function loadTheme() {
-  if (localStorage.getItem("theme") === "dark") {
-    app.classList.add("dark");
-    themeToggle.innerText = "☀️";
-  }
-}
-
-/* DATE */
-const today = () => new Date().toISOString().slice(0,10);
-
-/* ADD */
-addBtn.onclick = () => {
-  if (!input.value.trim()) return;
-
-  const habits = getHabits();
-  habits.push({
-    text: input.value,
-    doneToday: false,
-    history: {}
-  });
-
-  saveHabits(habits);
-  input.value = "";
-  loadHabits();
-};
-
-/* LOAD */
-function loadHabits() {
-  const list = document.getElementById("habitList");
-  const bar = document.getElementById("progress-bar");
-  const text = document.getElementById("progress-text");
-
-  list.innerHTML = "";
-  const habits = getHabits();
-  let done = 0;
-
-  habits.forEach((h,i)=>{
-    if (h.doneToday) done++;
+  habits.forEach((h, i) => {
+    if (h.doneToday) doneCount++;
 
     const li = document.createElement("li");
-
-    // swipe handling
-    let startX = 0;
-    li.addEventListener("touchstart", e => startX = e.touches[0].clientX);
-    li.addEventListener("touchend", e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      if (dx > 80) toggleHabit(i);        // swipe right
-      if (dx < -80) deleteHabit(i);       // swipe left
-    });
+    li.style.animationDelay = `${i * 60}ms`; // 🌊 waterfall
 
     const row = document.createElement("div");
     row.className = "row";
@@ -153,98 +86,6 @@ function loadHabits() {
     span.innerText = h.text;
 
     left.append(check, span);
-    row.append(left);
-
-    li.append(row);
-
-    // HEATMAP (last 14 days)
-    const heat = document.createElement("div");
-    heat.className = "heatmap";
-
-    for (let d = 13; d >= 0; d--) {
-      const date = new Date();
-      date.setDate(date.getDate() - d);
-      const key = date.toISOString().slice(0,10);
-
-      const cell = document.createElement("div");
-      cell.className = "day" + (h.history[key] ? " done" : "");
-      heat.appendChild(cell);
-    }
-
-    li.append(heat);
-    list.appendChild(li);
-  });
-
-  bar.style.width = habits.length ? (done / habits.length) * 100 + "%" : "0%";
-  text.innerText = `${done} / ${habits.length} today`;
-}
-
-/* TOGGLE */
-function toggleHabit(i) {
-  const habits = getHabits();
-  const h = habits[i];
-  const t = today();
-
-  if (!h.doneToday) {
-    h.doneToday = true;
-    h.history[t] = true;
-  }
-
-  saveHabits(habits);
-  loadHabits();
-}
-
-/* DELETE */
-function deleteHabit(i) {
-  if (!confirm("Delete habit?")) return;
-  const habits = getHabits();
-  habits.splice(i,1);
-  saveHabits(habits);
-  loadHabits();
-}
-
-/* RESET */
-function resetIfNewDay() {
-  const habits = getHabits();
-  const t = today();
-  habits.forEach(h => {
-    if (!h.history[t]) h.doneToday = false;
-  });
-  saveHabits(habits);
-}
-
-/* CLOCK */
-function startClock() {
-  const c = document.getElementById("clock");
-  setInterval(() => {
-    c.innerText = new Date().toLocaleTimeString("en-US");
-  }, 1000);
-}
-
-/* STORAGE */
-const getHabits = () => JSON.parse(localStorage.getItem("habits")) || [];
-const saveHabits = h => localStorage.setItem("habits", JSON.stringify(h));
-
-
-    const li = document.createElement("li");
-
-    /* TOP */
-    const top = document.createElement("div");
-    top.className = "top";
-
-    const left = document.createElement("div");
-    left.className = "left";
-
-    const check = document.createElement("div");
-    check.className = "check" + (h.doneToday ? " done" : "");
-    check.innerText = h.doneToday ? "✓" : "";
-    check.onclick = () => toggleHabit(i);
-
-    const span = document.createElement("span");
-    span.className = "habit-text" + (h.doneToday ? " done" : "");
-    span.innerText = h.text;
-
-    left.append(check, span);
 
     const right = document.createElement("div");
     right.className = "right";
@@ -259,38 +100,38 @@ const saveHabits = h => localStorage.setItem("habits", JSON.stringify(h));
     del.onclick = () => deleteHabit(i);
 
     right.append(streak, del);
-    top.append(left, right);
+    row.append(left, right);
 
-    /* WEEK */
     const week = document.createElement("div");
     week.className = "week";
 
-    last7Days().forEach(d=>{
+    for (let d = 6; d >= 0; d--) {
+      const date = daysAgo(d);
       const dot = document.createElement("div");
       dot.className = "day";
-      if (h.history[d]) dot.classList.add("done");
-      if (d === today()) dot.classList.add("today");
+      if (h.history[date]) dot.classList.add("done");
+      if (date === today()) dot.classList.add("today");
       week.appendChild(dot);
-    });
+    }
 
-    li.append(top, week);
+    li.append(row, week);
     list.appendChild(li);
   });
 
-  bar.style.width = habits.length ? (done/habits.length)*100 + "%" : "0%";
-  text.innerText = `${done} / ${habits.length} completed today`;
+  bar.style.width = habits.length ? (doneCount / habits.length) * 100 + "%" : "0%";
+  text.innerText = `${doneCount} / ${habits.length} completed today`;
 }
 
 /* TOGGLE */
-function toggleHabit(i) {
+function toggleHabit(index) {
   const habits = getHabits();
-  const h = habits[i];
+  const h = habits[index];
   const t = today();
 
   if (!h.doneToday) {
     h.doneToday = true;
     h.history[t] = true;
-    h.streak = h.history[todayMinus(1)] ? h.streak + 1 : 1;
+    h.streak = h.lastDone === daysAgo(1) ? h.streak + 1 : 1;
     h.lastDone = t;
   }
 
@@ -298,17 +139,11 @@ function toggleHabit(i) {
   loadHabits();
 }
 
-function todayMinus(n) {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d.toISOString().slice(0,10);
-}
-
 /* DELETE */
-function deleteHabit(i) {
+function deleteHabit(index) {
   if (!confirm("Delete this habit?")) return;
   const habits = getHabits();
-  habits.splice(i,1);
+  habits.splice(index, 1);
   saveHabits(habits);
   loadHabits();
 }
@@ -325,15 +160,17 @@ function resetIfNewDay() {
 
 /* CLOCK */
 function startClock() {
-  const c = document.getElementById("clock");
+  const clock = document.getElementById("clock");
   setInterval(() => {
-    c.innerText = new Date().toLocaleTimeString("en-US");
+    clock.innerText = new Date().toLocaleTimeString("en-US");
   }, 1000);
 }
 
 /* STORAGE */
-const getHabits = () =>
-  JSON.parse(localStorage.getItem("habits")) || [];
+function getHabits() {
+  return JSON.parse(localStorage.getItem("habits")) || [];
+}
 
-const saveHabits = h =>
-  localStorage.setItem("habits", JSON.stringify(h));
+function saveHabits(habits) {
+  localStorage.setItem("habits", JSON.stringify(habits));
+}
