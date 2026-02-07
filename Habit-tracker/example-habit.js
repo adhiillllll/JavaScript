@@ -1,22 +1,23 @@
+/* ========== INIT ========== */
 window.onload = () => {
   loadTheme();
-  resetIfNewDay();
-  loadHabits();
+  handleNewDay();
+  renderHabits();
   startClock();
+  showDate();
 };
 
-/* DOM */
+/* ========== DOM ========== */
 const app = document.getElementById("app");
 const themeToggle = document.getElementById("themeToggle");
 const habitInput = document.getElementById("habitInput");
 const addBtn = document.getElementById("addBtn");
 
-/* THEME */
+/* ========== THEME ========== */
 themeToggle.onclick = () => {
-  app.classList.toggle("dark");
-  const dark = app.classList.contains("dark");
-  localStorage.setItem("theme", dark ? "dark" : "light");
-  themeToggle.innerText = dark ? "☀️" : "🌙";
+  const isDark = app.classList.toggle("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+  themeToggle.innerText = isDark ? "☀️" : "🌙";
 };
 
 function loadTheme() {
@@ -26,16 +27,28 @@ function loadTheme() {
   }
 }
 
-/* DATE HELPERS */
-const today = () => new Date().toISOString().slice(0, 10);
+/* ========== DATE HELPERS ========== */
+function getTodayKey() {
+  return new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+}
 
-const daysAgo = (n) => {
+function getYesterdayKey() {
   const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d.toISOString().slice(0, 10);
-};
+  d.setDate(d.getDate() - 1);
+  return d.toLocaleDateString("en-CA");
+}
 
-/* ADD */
+function getLast7Days() {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toLocaleDateString("en-CA"));
+  }
+  return days;
+}
+
+/* ========== ADD HABIT ========== */
 addBtn.onclick = () => {
   const text = habitInput.value.trim();
   if (!text) return;
@@ -43,32 +56,33 @@ addBtn.onclick = () => {
   const habits = getHabits();
   habits.push({
     text,
-    doneToday: false,
+    completedToday: false,
     streak: 0,
-    lastDone: null,
+    lastCompleted: null,
     history: {}
   });
 
   saveHabits(habits);
   habitInput.value = "";
-  loadHabits();
+  renderHabits();
 };
 
-/* LOAD */
-function loadHabits() {
+/* ========== RENDER ========== */
+function renderHabits() {
   const list = document.getElementById("habitList");
   const bar = document.getElementById("progress-bar");
-  const text = document.getElementById("progress-text");
+  const progressText = document.getElementById("progress-text");
 
-  list.innerHTML = "";
   const habits = getHabits();
-  let doneCount = 0;
+  list.innerHTML = "";
 
-  habits.forEach((h, i) => {
-    if (h.doneToday) doneCount++;
+  let completedCount = 0;
+
+  habits.forEach((habit, index) => {
+    if (habit.completedToday) completedCount++;
 
     const li = document.createElement("li");
-    li.style.animationDelay = `${i * 60}ms`; // 🌊 waterfall
+    li.style.animationDelay = `${index * 60}ms`;
 
     const row = document.createElement("div");
     row.className = "row";
@@ -77,27 +91,27 @@ function loadHabits() {
     left.className = "left";
 
     const check = document.createElement("div");
-    check.className = "check" + (h.doneToday ? " done" : "");
-    check.innerText = h.doneToday ? "✓" : "";
-    check.onclick = () => toggleHabit(i);
+    check.className = "check" + (habit.completedToday ? " done" : "");
+    check.innerText = habit.completedToday ? "✓" : "";
+    check.onclick = () => toggleHabit(index);
 
-    const span = document.createElement("span");
-    span.className = "habit" + (h.doneToday ? " done" : "");
-    span.innerText = h.text;
+    const title = document.createElement("span");
+    title.className = "habit" + (habit.completedToday ? " done" : "");
+    title.innerText = habit.text;
 
-    left.append(check, span);
+    left.append(check, title);
 
     const right = document.createElement("div");
     right.className = "right";
 
     const streak = document.createElement("span");
     streak.className = "streak";
-    streak.innerText = `🔥 ${h.streak}`;
+    streak.innerText = `🔥 ${habit.streak}`;
 
     const del = document.createElement("button");
     del.className = "delete";
     del.innerText = "🗑";
-    del.onclick = () => deleteHabit(i);
+    del.onclick = () => deleteHabit(index);
 
     right.append(streak, del);
     row.append(left, right);
@@ -105,60 +119,73 @@ function loadHabits() {
     const week = document.createElement("div");
     week.className = "week";
 
-    for (let d = 6; d >= 0; d--) {
-      const date = daysAgo(d);
+    getLast7Days().forEach(day => {
       const dot = document.createElement("div");
       dot.className = "day";
-      if (h.history[date]) dot.classList.add("done");
-      if (date === today()) dot.classList.add("today");
+      if (habit.history[day]) dot.classList.add("done");
+      if (day === getTodayKey()) dot.classList.add("today");
       week.appendChild(dot);
-    }
+    });
 
     li.append(row, week);
     list.appendChild(li);
   });
 
-  bar.style.width = habits.length ? (doneCount / habits.length) * 100 + "%" : "0%";
-  text.innerText = `${doneCount} / ${habits.length} completed today`;
+  const percent = habits.length
+    ? (completedCount / habits.length) * 100
+    : 0;
+
+  bar.style.width = percent + "%";
+  progressText.innerText = `${completedCount} / ${habits.length} completed today`;
 }
 
-/* TOGGLE */
+/* ========== TOGGLE ========== */
 function toggleHabit(index) {
   const habits = getHabits();
-  const h = habits[index];
-  const t = today();
+  const habit = habits[index];
+  const today = getTodayKey();
 
-  if (!h.doneToday) {
-    h.doneToday = true;
-    h.history[t] = true;
-    h.streak = h.lastDone === daysAgo(1) ? h.streak + 1 : 1;
-    h.lastDone = t;
+  if (habit.completedToday) return;
+
+  habit.completedToday = true;
+  habit.history[today] = true;
+
+  if (habit.lastCompleted === getYesterdayKey()) {
+    habit.streak += 1;
+  } else {
+    habit.streak = 1;
   }
 
+  habit.lastCompleted = today;
+
   saveHabits(habits);
-  loadHabits();
+  renderHabits();
 }
 
-/* DELETE */
+/* ========== DELETE ========== */
 function deleteHabit(index) {
   if (!confirm("Delete this habit?")) return;
   const habits = getHabits();
   habits.splice(index, 1);
   saveHabits(habits);
-  loadHabits();
+  renderHabits();
 }
 
-/* RESET */
-function resetIfNewDay() {
+/* ========== NEW DAY RESET ========== */
+function handleNewDay() {
   const habits = getHabits();
-  const t = today();
+  const today = getTodayKey();
+
   habits.forEach(h => {
-    if (h.lastDone !== t) h.doneToday = false;
+    if (h.lastCompleted !== today) {
+      h.completedToday = false;
+    }
   });
+
   saveHabits(habits);
 }
 
-/* CLOCK */
+/* ========== CLOCK & DATE ========== */
 function startClock() {
   const clock = document.getElementById("clock");
   setInterval(() => {
@@ -166,7 +193,16 @@ function startClock() {
   }, 1000);
 }
 
-/* STORAGE */
+function showDate() {
+  document.getElementById("date").innerText =
+    new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "short",
+      day: "numeric"
+    });
+}
+
+/* ========== STORAGE ========== */
 function getHabits() {
   return JSON.parse(localStorage.getItem("habits")) || [];
 }

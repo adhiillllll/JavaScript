@@ -62,15 +62,20 @@ body {
 /* HEADER */
 header {
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+#date {
+  font-size: 13px;
+  opacity: .9;
 }
 
 #clock {
   font-size: 13px;
-  opacity: .85;
+  opacity: .8;
 }
 
-/* ADD BAR (SMALL WIDTH) */
+/* ADD BAR */
 .add-bar {
   display: flex;
   gap: 8px;
@@ -132,7 +137,7 @@ ul {
   list-style: none;
 }
 
-/* 🌊 WATERFALL ANIMATION */
+/* 🌊 WATERFALL */
 li {
   opacity: 0;
   transform: translateY(8px);
@@ -210,7 +215,7 @@ li {
   cursor: pointer;
 }
 
-/* WEEKLY DOTS */
+/* WEEKLY */
 .week {
   display: flex;
   gap: 6px;
@@ -240,6 +245,7 @@ li {
 
   <header>
     <h1>🌱 Habit Tracker</h1>
+    <div id="date"></div>
     <div id="clock"></div>
   </header>
 
