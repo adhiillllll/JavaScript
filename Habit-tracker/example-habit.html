@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Habit Tracker</title>
 
 <style>
@@ -33,6 +33,7 @@ body {
   flex-direction: column;
   position: relative;
 
+  /* DESKTOP → forest */
   background:
     linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
     url("img-habit/download.png");
@@ -40,13 +41,23 @@ body {
   background-position: center;
 }
 
-.app.dark {
-  background:
-    linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
-    url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
+/* MOBILE → mountain */
+@media (max-width: 600px) {
+  .app {
+    background:
+      linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+      url("img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg");
+    background-size: cover;
+    background-position: center;
+  }
 }
 
-/* THEME */
+/* Dark mode just darkens image */
+.app.dark {
+  filter: brightness(0.85);
+}
+
+/* THEME BUTTON */
 .theme-toggle {
   position: absolute;
   top: 14px;
@@ -137,7 +148,7 @@ ul {
   list-style: none;
 }
 
-/* 🌊 WATERFALL */
+/* 🌊 WATERFALL ANIMATION */
 li {
   opacity: 0;
   transform: translateY(8px);
@@ -171,7 +182,7 @@ li {
   gap: 12px;
 }
 
-/* CHECK */
+/* CHECKBOX */
 .check {
   width: 22px;
   height: 22px;
@@ -215,7 +226,7 @@ li {
   cursor: pointer;
 }
 
-/* WEEKLY */
+/* WEEKLY DOTS */
 .week {
   display: flex;
   gap: 6px;
