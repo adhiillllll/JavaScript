@@ -1,23 +1,22 @@
-/* ========== INIT ========== */
 window.onload = () => {
   loadTheme();
-  handleNewDay();
+  resetForNewDay();
   renderHabits();
   startClock();
   showDate();
 };
 
-/* ========== DOM ========== */
+/* DOM */
 const app = document.getElementById("app");
 const themeToggle = document.getElementById("themeToggle");
 const habitInput = document.getElementById("habitInput");
 const addBtn = document.getElementById("addBtn");
 
-/* ========== THEME ========== */
+/* THEME */
 themeToggle.onclick = () => {
-  const isDark = app.classList.toggle("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  themeToggle.innerText = isDark ? "☀️" : "🌙";
+  app.classList.toggle("dark");
+  localStorage.setItem("theme", app.classList.contains("dark") ? "dark" : "light");
+  themeToggle.innerText = app.classList.contains("dark") ? "☀️" : "🌙";
 };
 
 function loadTheme() {
@@ -27,18 +26,18 @@ function loadTheme() {
   }
 }
 
-/* ========== DATE HELPERS ========== */
-function getTodayKey() {
-  return new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
+/* DATE HELPERS */
+function todayKey() {
+  return new Date().toLocaleDateString("en-CA");
 }
 
-function getYesterdayKey() {
+function yesterdayKey() {
   const d = new Date();
   d.setDate(d.getDate() - 1);
   return d.toLocaleDateString("en-CA");
 }
 
-function getLast7Days() {
+function last7Days() {
   const days = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -48,7 +47,7 @@ function getLast7Days() {
   return days;
 }
 
-/* ========== ADD HABIT ========== */
+/* ADD */
 addBtn.onclick = () => {
   const text = habitInput.value.trim();
   if (!text) return;
@@ -67,7 +66,7 @@ addBtn.onclick = () => {
   renderHabits();
 };
 
-/* ========== RENDER ========== */
+/* RENDER */
 function renderHabits() {
   const list = document.getElementById("habitList");
   const bar = document.getElementById("progress-bar");
@@ -76,13 +75,13 @@ function renderHabits() {
   const habits = getHabits();
   list.innerHTML = "";
 
-  let completedCount = 0;
+  let doneCount = 0;
 
-  habits.forEach((habit, index) => {
-    if (habit.completedToday) completedCount++;
+  habits.forEach((h, i) => {
+    if (h.completedToday) doneCount++;
 
     const li = document.createElement("li");
-    li.style.animationDelay = `${index * 60}ms`;
+    li.style.animationDelay = `${i * 60}ms`;
 
     const row = document.createElement("div");
     row.className = "row";
@@ -91,27 +90,27 @@ function renderHabits() {
     left.className = "left";
 
     const check = document.createElement("div");
-    check.className = "check" + (habit.completedToday ? " done" : "");
-    check.innerText = habit.completedToday ? "✓" : "";
-    check.onclick = () => toggleHabit(index);
+    check.className = "check" + (h.completedToday ? " done" : "");
+    check.innerText = h.completedToday ? "✓" : "";
+    check.onclick = () => toggleHabit(i);
 
-    const title = document.createElement("span");
-    title.className = "habit" + (habit.completedToday ? " done" : "");
-    title.innerText = habit.text;
+    const span = document.createElement("span");
+    span.className = "habit" + (h.completedToday ? " done" : "");
+    span.innerText = h.text;
 
-    left.append(check, title);
+    left.append(check, span);
 
     const right = document.createElement("div");
     right.className = "right";
 
     const streak = document.createElement("span");
     streak.className = "streak";
-    streak.innerText = `🔥 ${habit.streak}`;
+    streak.innerText = `🔥 ${h.streak}`;
 
     const del = document.createElement("button");
     del.className = "delete";
     del.innerText = "🗑";
-    del.onclick = () => deleteHabit(index);
+    del.onclick = () => deleteHabit(i);
 
     right.append(streak, del);
     row.append(left, right);
@@ -119,11 +118,11 @@ function renderHabits() {
     const week = document.createElement("div");
     week.className = "week";
 
-    getLast7Days().forEach(day => {
+    last7Days().forEach(day => {
       const dot = document.createElement("div");
       dot.className = "day";
-      if (habit.history[day]) dot.classList.add("done");
-      if (day === getTodayKey()) dot.classList.add("today");
+      if (h.history[day]) dot.classList.add("done");
+      if (day === todayKey()) dot.classList.add("today");
       week.appendChild(dot);
     });
 
@@ -131,38 +130,29 @@ function renderHabits() {
     list.appendChild(li);
   });
 
-  const percent = habits.length
-    ? (completedCount / habits.length) * 100
-    : 0;
-
+  const percent = habits.length ? (doneCount / habits.length) * 100 : 0;
   bar.style.width = percent + "%";
-  progressText.innerText = `${completedCount} / ${habits.length} completed today`;
+  progressText.innerText = `${doneCount} / ${habits.length} completed today`;
 }
 
-/* ========== TOGGLE ========== */
+/* TOGGLE */
 function toggleHabit(index) {
   const habits = getHabits();
-  const habit = habits[index];
-  const today = getTodayKey();
+  const h = habits[index];
+  const today = todayKey();
 
-  if (habit.completedToday) return;
+  if (h.completedToday) return;
 
-  habit.completedToday = true;
-  habit.history[today] = true;
-
-  if (habit.lastCompleted === getYesterdayKey()) {
-    habit.streak += 1;
-  } else {
-    habit.streak = 1;
-  }
-
-  habit.lastCompleted = today;
+  h.completedToday = true;
+  h.history[today] = true;
+  h.streak = h.lastCompleted === yesterdayKey() ? h.streak + 1 : 1;
+  h.lastCompleted = today;
 
   saveHabits(habits);
   renderHabits();
 }
 
-/* ========== DELETE ========== */
+/* DELETE */
 function deleteHabit(index) {
   if (!confirm("Delete this habit?")) return;
   const habits = getHabits();
@@ -171,21 +161,19 @@ function deleteHabit(index) {
   renderHabits();
 }
 
-/* ========== NEW DAY RESET ========== */
-function handleNewDay() {
+/* RESET */
+function resetForNewDay() {
   const habits = getHabits();
-  const today = getTodayKey();
+  const today = todayKey();
 
   habits.forEach(h => {
-    if (h.lastCompleted !== today) {
-      h.completedToday = false;
-    }
+    if (h.lastCompleted !== today) h.completedToday = false;
   });
 
   saveHabits(habits);
 }
 
-/* ========== CLOCK & DATE ========== */
+/* CLOCK + DATE */
 function startClock() {
   const clock = document.getElementById("clock");
   setInterval(() => {
@@ -202,7 +190,7 @@ function showDate() {
     });
 }
 
-/* ========== STORAGE ========== */
+/* STORAGE */
 function getHabits() {
   return JSON.parse(localStorage.getItem("habits")) || [];
 }
