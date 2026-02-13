@@ -1,44 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Habit Tracker</title>
 
 <style>
-* {
+*{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:system-ui, sans-serif;
+  font-family:system-ui;
 }
 
-body {
+body{
   min-height:100vh;
-  background:black;
   display:flex;
   justify-content:center;
   align-items:center;
+  background:black;
 }
 
-.app {
+.app{
   width:100%;
   max-width:420px;
   height:92vh;
-  padding:18px;
-  border-radius:24px;
-  color:white;
+  border-radius:25px;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  position:relative;
   overflow:hidden;
+  position:relative;
   background-size:cover;
   background-position:center;
-  transition:background-image .8s ease;
+  color:white;
 }
 
-/* Glass */
-.app::before {
+.app::before{
   content:"";
   position:absolute;
   inset:0;
@@ -46,142 +44,146 @@ body {
   background:rgba(0,0,0,.35);
   z-index:0;
 }
-.app > * { position:relative; z-index:1; }
 
-/* Header */
-header { text-align:center; margin-bottom:8px; }
-#date,#clock { font-size:13px; opacity:.8; }
+.app > *{
+  position:relative;
+  z-index:1;
+}
 
-/* Add */
-.add-bar {
+header{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+#date,#clock{
+  font-size:13px;
+  opacity:.8;
+}
+
+.add{
   display:flex;
   gap:8px;
   margin:10px 0;
 }
-.add-bar input {
+
+.add input{
   flex:1;
   padding:10px;
-  border-radius:12px;
+  border-radius:10px;
   border:none;
 }
-.add-bar button {
+
+.add button{
   width:40px;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   background:#00ff88;
   font-size:20px;
 }
 
-/* Progress */
-.bar {
+.bar{
   height:6px;
-  background:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.3);
   border-radius:6px;
   overflow:hidden;
 }
-#progress-bar {
-  height:100%;
-  background:#00ff88;
-  width:0%;
-  transition:width .4s ease;
-}
-#progress-text { text-align:center; font-size:12px; }
 
-/* Tabs */
-.tabs {
+#progress-bar{
+  height:100%;
+  width:0%;
+  background:#00ff88;
+  transition:width .3s;
+}
+
+#progress-text{
+  text-align:center;
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.tabs{
   display:flex;
   gap:6px;
-  margin:8px 0;
+  margin-bottom:8px;
 }
-.tabs button {
+
+.tabs button{
   flex:1;
   padding:6px;
-  border-radius:8px;
   border:none;
-  background:rgba(255,255,255,.2);
+  border-radius:8px;
+  background:rgba(255,255,255,.25);
   color:white;
 }
-.tabs button.active {
+
+.tabs button.active{
   background:#00ff88;
   color:black;
 }
 
-/* Views */
-.view { display:none; flex:1; overflow-y:auto; }
-.view.active { display:block; }
+.view{
+  display:none;
+  flex:1;
+  overflow-y:auto;
+}
 
-/* Habits */
-li {
-  background:rgba(0,0,0,.45);
+.view.active{
+  display:block;
+}
+
+li{
+  background:rgba(0,0,0,.5);
   padding:14px;
   border-radius:14px;
   margin-bottom:10px;
-  animation:fade .4s ease forwards;
-  opacity:0;
 }
-@keyframes fade { to { opacity:1; } }
 
-.row {
+.row{
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
-.check {
+
+.check{
   width:20px;
   height:20px;
   border:2px solid #00ff88;
   border-radius:6px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   cursor:pointer;
 }
-.check.done { background:#00ff88; color:black; }
-.habit.done { text-decoration:line-through; opacity:.6; }
 
-.week {
-  display:flex;
-  gap:5px;
-  margin-top:6px;
-}
-.day {
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:rgba(255,255,255,.3);
-}
-.day.done { background:#00ff88; }
-
-/* Calendar */
-.calendar-grid {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-}
-.calendar-day {
-  height:40px;
-  border-radius:8px;
-  background:rgba(255,255,255,.15);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-}
-.calendar-day.done {
+.check.done{
   background:#00ff88;
   color:black;
 }
 
-/* Fire burst */
-.fire-burst {
-  position:absolute;
-  font-size:50px;
-  animation:burst 1s ease forwards;
-  pointer-events:none;
+.habit.done{
+  text-decoration:line-through;
+  opacity:.6;
 }
-@keyframes burst {
-  0% { transform:scale(.5); opacity:1; }
-  100% { transform:scale(2); opacity:0; }
+
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+}
+
+.calendar-day{
+  height:40px;
+  border-radius:8px;
+  background:rgba(255,255,255,.2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:12px;
+}
+
+.calendar-day.done{
+  background:#00ff88;
+  color:black;
 }
 </style>
 </head>
@@ -189,32 +191,39 @@ li {
 <body>
 
 <div class="app" id="app">
-  <header>
-    <h1>🌱 Habit Tracker</h1>
-    <div id="date"></div>
-    <div id="clock"></div>
-  </header>
 
-  <div class="add-bar">
-    <input id="habitInput" placeholder="Add habit…">
-    <button id="addBtn">＋</button>
-  </div>
+<header>
+  <h1>🌱 Habit Tracker</h1>
+  <div id="date"></div>
+  <div id="clock"></div>
+</header>
 
-  <div class="bar"><div id="progress-bar"></div></div>
-  <div id="progress-text"></div>
+<div class="add">
+  <input id="habitInput" placeholder="Add habit...">
+  <button id="addBtn">+</button>
+</div>
 
-  <div class="tabs">
-    <button data-tab="habits" class="active">Habits</button>
-    <button data-tab="calendar">Calendar</button>
-  </div>
+<div class="bar"><div id="progress-bar"></div></div>
+<div id="progress-text"></div>
 
-  <div id="habitsView" class="view active">
-    <ul id="habitList"></ul>
-  </div>
+<div class="tabs">
+  <button id="habitsTab" class="active">Habits</button>
+  <button id="calendarTab">Calendar</button>
+  <button id="analyticsTab">Analytics</button>
+</div>
 
-  <div id="calendarView" class="view">
-    <div class="calendar-grid" id="calendarGrid"></div>
-  </div>
+<div id="habitsView" class="view active">
+  <ul id="habitList"></ul>
+</div>
+
+<div id="calendarView" class="view">
+  <div class="calendar-grid" id="calendarGrid"></div>
+</div>
+
+<div id="analyticsView" class="view">
+  <div id="statsView"></div>
+</div>
+
 </div>
 
 <script src="example-habit.js"></script>
