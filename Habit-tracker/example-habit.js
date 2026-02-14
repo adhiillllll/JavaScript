@@ -8,8 +8,7 @@ window.onload = () => {
   showDate();
 };
 
-/* ================= BACKGROUND ================= */
-
+/* BACKGROUND */
 const FOREST="img-habit/download.png";
 const MOUNTAIN="img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg";
 const app=document.getElementById("app");
@@ -20,30 +19,25 @@ function setBackground(){
     `url("${hour>=6&&hour<18?FOREST:MOUNTAIN}")`;
 }
 
-/* ================= DATE ================= */
+/* STORAGE */
+function getHabits(){
+  return JSON.parse(localStorage.getItem("habits"))||[];
+}
+function saveHabits(h){
+  localStorage.setItem("habits",JSON.stringify(h));
+}
 
+/* DATE */
 function today(){
   return new Date().toLocaleDateString("en-CA");
 }
-
 function yesterday(){
   const d=new Date();
   d.setDate(d.getDate()-1);
   return d.toLocaleDateString("en-CA");
 }
 
-/* ================= STORAGE ================= */
-
-function getHabits(){
-  return JSON.parse(localStorage.getItem("habits"))||[];
-}
-
-function saveHabits(h){
-  localStorage.setItem("habits",JSON.stringify(h));
-}
-
-/* ================= ADD ================= */
-
+/* ADD */
 document.getElementById("addBtn").onclick=()=>{
   const input=document.getElementById("habitInput");
   if(!input.value.trim()) return;
@@ -63,8 +57,7 @@ document.getElementById("addBtn").onclick=()=>{
   renderStats();
 };
 
-/* ================= RENDER HABITS ================= */
-
+/* RENDER HABITS */
 function renderHabits(){
   const list=document.getElementById("habitList");
   const bar=document.getElementById("progress-bar");
@@ -84,15 +77,18 @@ function renderHabits(){
           <div class="check ${h.completed?"done":""}">
             ${h.completed?"✓":""}
           </div>
-          <span class="${h.completed?"habit done":"habit"}">
-            ${h.text}
-          </span>
+          ${h.text}
         </div>
-        🔥 ${h.streak}
+        <div>
+          🔥 ${h.streak}
+          <button class="delete">X</button>
+        </div>
       </div>
     `;
 
     li.querySelector(".check").onclick=()=>toggle(i);
+    li.querySelector(".delete").onclick=()=>removeHabit(i);
+
     list.appendChild(li);
   });
 
@@ -100,8 +96,6 @@ function renderHabits(){
     (done/habits.length)*100+"%":"0%";
   text.innerText=`${done}/${habits.length} today`;
 }
-
-/* ================= TOGGLE ================= */
 
 function toggle(i){
   const habits=getHabits();
@@ -126,27 +120,19 @@ function toggle(i){
   renderStats();
 }
 
-/* ================= DAILY RESET ================= */
-
-function resetDaily(){
+function removeHabit(i){
   const habits=getHabits();
-  habits.forEach(h=>{
-    if(h.last!==today()){
-      if(h.last!==yesterday()){
-        h.streak=0;
-      }
-      h.completed=false;
-    }
-  });
+  habits.splice(i,1);
   saveHabits(habits);
+  renderHabits();
+  renderCalendar();
+  renderStats();
 }
 
-/* ================= CALENDAR ================= */
-
+/* CALENDAR */
 function renderCalendar(){
   const grid=document.getElementById("calendarGrid");
   grid.innerHTML="";
-
   const habits=getHabits();
   const history={};
 
@@ -157,31 +143,21 @@ function renderCalendar(){
   });
 
   const now=new Date();
-  const days=new Date(
-    now.getFullYear(),
-    now.getMonth()+1,
-    0
-  ).getDate();
+  const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
 
   for(let d=1;d<=days;d++){
-    const date=new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      d
-    ).toLocaleDateString("en-CA");
+    const date=new Date(now.getFullYear(),now.getMonth(),d)
+      .toLocaleDateString("en-CA");
 
     const cell=document.createElement("div");
     cell.className="calendar-day";
     cell.innerText=d;
-
     if(history[date]) cell.classList.add("done");
-
     grid.appendChild(cell);
   }
 }
 
-/* ================= ANALYTICS ================= */
-
+/* ANALYTICS */
 function renderStats(){
   const stats=document.getElementById("statsView");
   const habits=getHabits();
@@ -202,15 +178,27 @@ function renderStats(){
   `;
 }
 
-/* ================= CLOCK ================= */
+/* DAILY RESET */
+function resetDaily(){
+  const habits=getHabits();
+  habits.forEach(h=>{
+    if(h.last!==today()){
+      if(h.last!==yesterday()){
+        h.streak=0;
+      }
+      h.completed=false;
+    }
+  });
+  saveHabits(habits);
+}
 
+/* CLOCK */
 function startClock(){
   setInterval(()=>{
     document.getElementById("clock").innerText=
       new Date().toLocaleTimeString("en-US");
   },1000);
 }
-
 function showDate(){
   document.getElementById("date").innerText=
     new Date().toLocaleDateString("en-US",{
@@ -220,27 +208,25 @@ function showDate(){
     });
 }
 
-/* ================= TAB SWITCH ================= */
+/* SLIDER */
+const slider=document.getElementById("slider");
+let current=0;
 
-function switchTab(tab){
+function goTo(index){
+  current=index;
+  slider.style.transform=`translateX(-${index*100}%)`;
+
   document.querySelectorAll(".tabs button")
-    .forEach(b=>b.classList.remove("active"));
-
-  document.querySelectorAll(".view")
-    .forEach(v=>v.classList.remove("active"));
-
-  document.getElementById(tab+"Tab")
-    .classList.add("active");
-
-  document.getElementById(tab+"View")
-    .classList.add("active");
+    .forEach((b,i)=>b.classList.toggle("active",i===index));
 }
 
-document.getElementById("habitsTab")
-  .onclick=()=>switchTab("habits");
-
-document.getElementById("calendarTab")
-  .onclick=()=>switchTab("calendar");
-
-document.getElementById("analyticsTab")
-  .onclick=()=>switchTab("analytics");
+/* SWIPE */
+let startX=0;
+slider.addEventListener("touchstart",e=>{
+  startX=e.touches[0].clientX;
+});
+slider.addEventListener("touchend",e=>{
+  let diff=e.changedTouches[0].clientX-startX;
+  if(diff>50 && current>0) goTo(current-1);
+  if(diff<-50 && current<2) goTo(current+1);
+});
