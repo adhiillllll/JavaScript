@@ -1,9 +1,7 @@
 window.onload = () => {
   setBackground();
   resetDaily();
-  renderHabits();
-  renderCalendar();
-  renderStats();
+  renderAll();
   startClock();
   showDate();
 };
@@ -53,11 +51,17 @@ document.getElementById("addBtn").onclick=()=>{
 
   saveHabits(habits);
   input.value="";
-  renderHabits();
-  renderStats();
+  renderAll();
 };
 
-/* RENDER HABITS */
+/* RENDER ALL */
+function renderAll(){
+  renderHabits();
+  renderCalendar();
+  renderStats();
+}
+
+/* HABITS */
 function renderHabits(){
   const list=document.getElementById("habitList");
   const bar=document.getElementById("progress-bar");
@@ -106,27 +110,18 @@ function toggle(i){
   h.completed=true;
   h.history[today()]=true;
 
-  if(h.last===yesterday()){
-    h.streak++;
-  }else{
-    h.streak=1;
-  }
-
+  h.streak = h.last===yesterday()?h.streak+1:1;
   h.last=today();
 
   saveHabits(habits);
-  renderHabits();
-  renderCalendar();
-  renderStats();
+  renderAll();
 }
 
 function removeHabit(i){
   const habits=getHabits();
   habits.splice(i,1);
   saveHabits(habits);
-  renderHabits();
-  renderCalendar();
-  renderStats();
+  renderAll();
 }
 
 /* CALENDAR */
@@ -137,9 +132,7 @@ function renderCalendar(){
   const history={};
 
   habits.forEach(h=>{
-    Object.keys(h.history).forEach(d=>{
-      history[d]=true;
-    });
+    Object.keys(h.history).forEach(d=>history[d]=true);
   });
 
   const now=new Date();
@@ -159,7 +152,7 @@ function renderCalendar(){
 
 /* ANALYTICS */
 function renderStats(){
-  const stats=document.getElementById("statsView");
+  const stats=document.getElementById("statsContent");
   const habits=getHabits();
 
   let total=0;
@@ -171,21 +164,21 @@ function renderStats(){
   });
 
   stats.innerHTML=`
-    <h3>Analytics</h3>
-    <p>Total habits: ${habits.length}</p>
-    <p>Total completions: ${total}</p>
-    <p>Best streak: 🔥 ${best}</p>
+    <div class="stats-box">
+      <h3>📊 Analytics</h3>
+      <p>Total habits: ${habits.length}</p>
+      <p>Total completions: ${total}</p>
+      <p>Best streak: 🔥 ${best}</p>
+    </div>
   `;
 }
 
-/* DAILY RESET */
+/* RESET */
 function resetDaily(){
   const habits=getHabits();
   habits.forEach(h=>{
     if(h.last!==today()){
-      if(h.last!==yesterday()){
-        h.streak=0;
-      }
+      if(h.last!==yesterday()) h.streak=0;
       h.completed=false;
     }
   });
@@ -208,25 +201,34 @@ function showDate(){
     });
 }
 
-/* SLIDER */
-const slider=document.getElementById("slider");
-let current=0;
+/* TAB SWITCH */
+const habitsTab=document.getElementById("habitsTab");
+const calendarTab=document.getElementById("calendarTab");
+const statsTab=document.getElementById("statsTab");
 
-function goTo(index){
-  current=index;
-  slider.style.transform=`translateX(-${index*100}%)`;
+habitsTab.onclick=()=>switchTab("habits");
+calendarTab.onclick=()=>switchTab("calendar");
+statsTab.onclick=()=>switchTab("stats");
 
+function switchTab(tab){
   document.querySelectorAll(".tabs button")
-    .forEach((b,i)=>b.classList.toggle("active",i===index));
-}
+    .forEach(b=>b.classList.remove("active"));
 
-/* SWIPE */
-let startX=0;
-slider.addEventListener("touchstart",e=>{
-  startX=e.touches[0].clientX;
-});
-slider.addEventListener("touchend",e=>{
-  let diff=e.changedTouches[0].clientX-startX;
-  if(diff>50 && current>0) goTo(current-1);
-  if(diff<-50 && current<2) goTo(current+1);
-});
+  document.querySelectorAll(".view")
+    .forEach(v=>v.classList.remove("active"));
+
+  if(tab==="habits"){
+    habitsTab.classList.add("active");
+    document.getElementById("habitsView").classList.add("active");
+  }
+
+  if(tab==="calendar"){
+    calendarTab.classList.add("active");
+    document.getElementById("calendarView").classList.add("active");
+  }
+
+  if(tab==="stats"){
+    statsTab.classList.add("active");
+    document.getElementById("statsView").classList.add("active");
+  }
+}
