@@ -10,217 +10,223 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:system-ui;
-}
-
-html,body{
-  height:100%;
+  font-family:-apple-system,BlinkMacSystemFont,system-ui;
 }
 
 body{
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   background:black;
 }
 
-/* APP */
+/* APP CONTAINER */
 .app{
   width:100%;
   max-width:420px;
-  height:95vh;
-  border-radius:25px;
-  padding:20px;
-  position:relative;
-  overflow:hidden;
+  height:92vh;
+  padding:25px;
+  border-radius:30px;
   display:flex;
   flex-direction:column;
-  background-size:cover;
-  background-position:center;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 25px 60px rgba(0,0,0,0.5);
   color:white;
-}
-
-/* GLASS */
-.app::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  backdrop-filter:blur(10px);
-  background:rgba(0,0,0,.35);
-  z-index:0;
-}
-.app > *{
-  position:relative;
-  z-index:1;
+  overflow:hidden;
 }
 
 /* HEADER */
 header{
   text-align:center;
+  margin-bottom:15px;
+}
+
+h1{
+  font-weight:600;
+  letter-spacing:1px;
 }
 
 #date,#clock{
   font-size:13px;
-  opacity:.8;
+  opacity:.7;
 }
 
-/* ADD */
+/* ADD SECTION */
 .add{
   display:flex;
   gap:8px;
-  margin:10px 0;
+  margin-bottom:15px;
 }
 
 .add input{
   flex:1;
-  padding:10px;
-  border-radius:10px;
+  padding:12px;
+  border-radius:15px;
   border:none;
+  outline:none;
+  background:rgba(255,255,255,0.15);
+  color:white;
 }
 
 .add button{
-  width:40px;
+  width:45px;
   border:none;
-  border-radius:10px;
-  background:#00ff88;
-  font-size:20px;
+  border-radius:15px;
+  background:linear-gradient(135deg,#00ffcc,#00ffaa);
+  font-size:22px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.add button:hover{
+  transform:scale(1.05);
 }
 
 /* PROGRESS */
+.progress{
+  margin-bottom:15px;
+}
+
 .bar{
-  height:6px;
-  background:rgba(255,255,255,.3);
-  border-radius:6px;
+  height:8px;
+  background:rgba(255,255,255,0.2);
+  border-radius:20px;
   overflow:hidden;
 }
 
 #progress-bar{
   height:100%;
   width:0%;
-  background:#00ff88;
-  transition:.3s;
+  background:linear-gradient(90deg,#00ffaa,#00ffcc);
+  transition:width .4s ease;
 }
 
 #progress-text{
-  text-align:center;
   font-size:12px;
-  margin-bottom:6px;
+  margin-top:5px;
+  opacity:.7;
 }
 
 /* TABS */
 .tabs{
   display:flex;
-  gap:6px;
-  margin-bottom:6px;
+  gap:8px;
+  margin-bottom:12px;
 }
 
 .tabs button{
   flex:1;
-  padding:6px;
+  padding:8px;
   border:none;
-  border-radius:8px;
-  background:rgba(255,255,255,.25);
+  border-radius:12px;
+  background:rgba(255,255,255,0.1);
   color:white;
+  cursor:pointer;
+  transition:.3s;
 }
 
 .tabs button.active{
-  background:#00ff88;
+  background:linear-gradient(135deg,#00ffaa,#00ffcc);
   color:black;
-}
-
-/* CONTENT AREA */
-.content{
-  position:relative;
-  flex:1;
-  overflow:hidden;
-}
-
-/* SLIDER (ABSOLUTE FIX) */
-.slider{
-  position:absolute;
-  top:0;
-  left:0;
-  height:100%;
-  width:300%;
-  display:flex;
-  transition:transform .4s ease;
 }
 
 /* VIEW */
 .view{
-  width:100%;
-  height:100%;
+  display:none;
+  flex:1;
   overflow-y:auto;
-  padding-right:5px;
 }
 
-/* HABITS */
-li{
-  background:rgba(0,0,0,.5);
-  padding:14px;
-  border-radius:14px;
-  margin-bottom:10px;
+.view.active{
+  display:block;
 }
 
-.row{
+/* HABIT CARD */
+.habit{
+  background:rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:15px;
+  margin-bottom:12px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  transition:.3s;
 }
 
-.check{
-  width:20px;
-  height:20px;
-  border:2px solid #00ff88;
-  border-radius:6px;
+.habit:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.15);
+}
+
+.left{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.checkbox{
+  width:22px;
+  height:22px;
+  border-radius:8px;
+  border:2px solid #00ffaa;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.checkbox.done{
+  background:linear-gradient(135deg,#00ffaa,#00ffcc);
+  color:black;
+}
+
+.habit-name{
+  font-size:15px;
+}
+
+.habit-name.done{
+  text-decoration:line-through;
+  opacity:.6;
+}
+
+.right{
   display:flex;
   align-items:center;
-  justify-content:center;
-  cursor:pointer;
+  gap:10px;
 }
 
-.check.done{
-  background:#00ff88;
-  color:black;
+.streak{
+  font-size:13px;
+  opacity:.8;
 }
 
 .delete{
   background:red;
   border:none;
   color:white;
+  border-radius:8px;
   padding:4px 8px;
-  border-radius:6px;
-  margin-left:8px;
   cursor:pointer;
 }
 
-/* CALENDAR */
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-}
-
-.calendar-day{
-  height:40px;
-  border-radius:8px;
-  background:rgba(255,255,255,.2);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:12px;
-}
-
-.calendar-day.done{
-  background:#00ff88;
-  color:black;
+/* ANALYTICS */
+.stats-box{
+  background:rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:15px;
+  margin-bottom:15px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app" id="app">
+<div class="app">
 
 <header>
   <h1>🌱 Habit Tracker</h1>
@@ -233,21 +239,22 @@ li{
   <button id="addBtn">+</button>
 </div>
 
-<div class="bar"><div id="progress-bar"></div></div>
-<div id="progress-text"></div>
-
-<div class="tabs">
-  <button onclick="goTo(0)" class="active">Habits</button>
-  <button onclick="goTo(1)">Calendar</button>
-  <button onclick="goTo(2)">Analytics</button>
+<div class="progress">
+  <div class="bar"><div id="progress-bar"></div></div>
+  <div id="progress-text"></div>
 </div>
 
-<div class="content">
-  <div class="slider" id="slider">
-    <div class="view"><ul id="habitList"></ul></div>
-    <div class="view"><div class="calendar-grid" id="calendarGrid"></div></div>
-    <div class="view"><div id="statsView"></div></div>
-  </div>
+<div class="tabs">
+  <button id="habitsTab" class="active">Habits</button>
+  <button id="statsTab">Analytics</button>
+</div>
+
+<div id="habitsView" class="view active">
+  <div id="habitList"></div>
+</div>
+
+<div id="statsView" class="view">
+  <div id="statsContent"></div>
 </div>
 
 </div>
