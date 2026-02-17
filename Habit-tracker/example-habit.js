@@ -1,48 +1,38 @@
 window.onload = () => {
-  setBackground();
   resetDaily();
   renderAll();
   startClock();
   showDate();
 };
 
-/* BACKGROUND */
-const FOREST="img-habit/download.png";
-const MOUNTAIN="img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg";
-const app=document.getElementById("app");
-
-function setBackground(){
-  const hour=new Date().getHours();
-  app.style.backgroundImage=
-    `url("${hour>=6&&hour<18?FOREST:MOUNTAIN}")`;
-}
-
 /* STORAGE */
 function getHabits(){
-  return JSON.parse(localStorage.getItem("habits"))||[];
-}
-function saveHabits(h){
-  localStorage.setItem("habits",JSON.stringify(h));
+  return JSON.parse(localStorage.getItem("habits")) || [];
 }
 
-/* DATE */
+function saveHabits(data){
+  localStorage.setItem("habits", JSON.stringify(data));
+}
+
+/* DATE HELPERS */
 function today(){
   return new Date().toLocaleDateString("en-CA");
 }
+
 function yesterday(){
-  const d=new Date();
+  const d = new Date();
   d.setDate(d.getDate()-1);
   return d.toLocaleDateString("en-CA");
 }
 
 /* ADD */
-document.getElementById("addBtn").onclick=()=>{
-  const input=document.getElementById("habitInput");
+document.getElementById("addBtn").onclick = () => {
+  const input = document.getElementById("habitInput");
   if(!input.value.trim()) return;
 
-  const habits=getHabits();
+  const habits = getHabits();
   habits.push({
-    text:input.value,
+    text: input.value,
     completed:false,
     streak:0,
     last:null,
@@ -57,103 +47,90 @@ document.getElementById("addBtn").onclick=()=>{
 /* RENDER ALL */
 function renderAll(){
   renderHabits();
-  renderCalendar();
   renderStats();
 }
 
-/* HABITS */
+/* RENDER HABITS */
 function renderHabits(){
-  const list=document.getElementById("habitList");
-  const bar=document.getElementById("progress-bar");
-  const text=document.getElementById("progress-text");
+  const list = document.getElementById("habitList");
+  const bar = document.getElementById("progress-bar");
+  const text = document.getElementById("progress-text");
 
   list.innerHTML="";
-  const habits=getHabits();
+  const habits = getHabits();
   let done=0;
 
   habits.forEach((h,i)=>{
     if(h.completed) done++;
 
-    const li=document.createElement("li");
-    li.innerHTML=`
-      <div class="row">
-        <div style="display:flex;gap:10px;align-items:center">
-          <div class="check ${h.completed?"done":""}">
-            ${h.completed?"✓":""}
-          </div>
+    const card = document.createElement("div");
+    card.className="habit";
+
+    card.innerHTML = `
+      <div class="left">
+        <div class="checkbox ${h.completed?'done':''}">
+          ${h.completed?'✓':''}
+        </div>
+        <div class="habit-name ${h.completed?'done':''}">
           ${h.text}
         </div>
-        <div>
-          🔥 ${h.streak}
-          <button class="delete">X</button>
-        </div>
+      </div>
+      <div class="right">
+        <div class="streak">🔥 ${h.streak}</div>
+        <button class="delete">X</button>
       </div>
     `;
 
-    li.querySelector(".check").onclick=()=>toggle(i);
-    li.querySelector(".delete").onclick=()=>removeHabit(i);
+    card.querySelector(".checkbox").onclick = ()=>toggle(i);
+    card.querySelector(".delete").onclick = ()=>removeHabit(i);
 
-    list.appendChild(li);
+    list.appendChild(card);
   });
 
-  bar.style.width=habits.length?
-    (done/habits.length)*100+"%":"0%";
-  text.innerText=`${done}/${habits.length} today`;
+  bar.style.width = habits.length ? (done/habits.length)*100 + "%" : "0%";
+  text.innerText = `${done}/${habits.length} completed today`;
 }
 
+/* TOGGLE */
 function toggle(i){
-  const habits=getHabits();
-  const h=habits[i];
+  const habits = getHabits();
+  const h = habits[i];
 
   if(h.completed) return;
 
   h.completed=true;
-  h.history[today()]=true;
-
-  h.streak = h.last===yesterday()?h.streak+1:1;
-  h.last=today();
+  h.history[today()] = true;
+  h.streak = h.last===yesterday()? h.streak+1 : 1;
+  h.last = today();
 
   saveHabits(habits);
   renderAll();
 }
 
+/* DELETE */
 function removeHabit(i){
-  const habits=getHabits();
+  const habits = getHabits();
   habits.splice(i,1);
   saveHabits(habits);
   renderAll();
 }
 
-/* CALENDAR */
-function renderCalendar(){
-  const grid=document.getElementById("calendarGrid");
-  grid.innerHTML="";
-  const habits=getHabits();
-  const history={};
-
+/* RESET DAILY */
+function resetDaily(){
+  const habits = getHabits();
   habits.forEach(h=>{
-    Object.keys(h.history).forEach(d=>history[d]=true);
+    if(h.last !== today()){
+      if(h.last !== yesterday()) h.streak=0;
+      h.completed=false;
+    }
   });
-
-  const now=new Date();
-  const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-
-  for(let d=1;d<=days;d++){
-    const date=new Date(now.getFullYear(),now.getMonth(),d)
-      .toLocaleDateString("en-CA");
-
-    const cell=document.createElement("div");
-    cell.className="calendar-day";
-    cell.innerText=d;
-    if(history[date]) cell.classList.add("done");
-    grid.appendChild(cell);
-  }
+  saveHabits(habits);
 }
 
-/* ANALYTICS */
+/* STATS */
 function renderStats(){
-  const stats=document.getElementById("statsContent");
-  const habits=getHabits();
+  const stats = document.getElementById("statsContent");
+  const habits = getHabits();
 
   let total=0;
   let best=0;
@@ -163,37 +140,26 @@ function renderStats(){
     if(h.streak>best) best=h.streak;
   });
 
-  stats.innerHTML=`
+  stats.innerHTML = `
     <div class="stats-box">
       <h3>📊 Analytics</h3>
-      <p>Total habits: ${habits.length}</p>
-      <p>Total completions: ${total}</p>
-      <p>Best streak: 🔥 ${best}</p>
+      <p>Total Habits: ${habits.length}</p>
+      <p>Total Completions: ${total}</p>
+      <p>Best Streak: 🔥 ${best}</p>
     </div>
   `;
-}
-
-/* RESET */
-function resetDaily(){
-  const habits=getHabits();
-  habits.forEach(h=>{
-    if(h.last!==today()){
-      if(h.last!==yesterday()) h.streak=0;
-      h.completed=false;
-    }
-  });
-  saveHabits(habits);
 }
 
 /* CLOCK */
 function startClock(){
   setInterval(()=>{
-    document.getElementById("clock").innerText=
+    document.getElementById("clock").innerText =
       new Date().toLocaleTimeString("en-US");
   },1000);
 }
+
 function showDate(){
-  document.getElementById("date").innerText=
+  document.getElementById("date").innerText =
     new Date().toLocaleDateString("en-US",{
       weekday:"long",
       month:"short",
@@ -201,34 +167,25 @@ function showDate(){
     });
 }
 
-/* TAB SWITCH */
-const habitsTab=document.getElementById("habitsTab");
-const calendarTab=document.getElementById("calendarTab");
-const statsTab=document.getElementById("statsTab");
-
-habitsTab.onclick=()=>switchTab("habits");
-calendarTab.onclick=()=>switchTab("calendar");
-statsTab.onclick=()=>switchTab("stats");
+/* TABS */
+document.getElementById("habitsTab").onclick = ()=>{
+  switchTab("habits");
+};
+document.getElementById("statsTab").onclick = ()=>{
+  switchTab("stats");
+};
 
 function switchTab(tab){
   document.querySelectorAll(".tabs button")
     .forEach(b=>b.classList.remove("active"));
-
   document.querySelectorAll(".view")
     .forEach(v=>v.classList.remove("active"));
 
   if(tab==="habits"){
     habitsTab.classList.add("active");
-    document.getElementById("habitsView").classList.add("active");
-  }
-
-  if(tab==="calendar"){
-    calendarTab.classList.add("active");
-    document.getElementById("calendarView").classList.add("active");
-  }
-
-  if(tab==="stats"){
+    habitsView.classList.add("active");
+  }else{
     statsTab.classList.add("active");
-    document.getElementById("statsView").classList.add("active");
+    statsView.classList.add("active");
   }
 }
