@@ -1,11 +1,33 @@
+/* =========================
+   AUTO BACKGROUND
+========================= */
+
+const FOREST = "img-habit/download.png";
+const MOUNTAIN = "img-habit/a6bd4db7ee7053689bd971b36cbcd1ef.jpg";
+
+function setBackground(){
+  const hour = new Date().getHours();
+  const app = document.getElementById("app");
+  app.style.backgroundImage =
+    `url("${hour >= 6 && hour < 18 ? FOREST : MOUNTAIN}")`;
+}
+
+/* =========================
+   ON LOAD
+========================= */
+
 window.onload = () => {
+  setBackground();
   resetDaily();
   renderAll();
   startClock();
   showDate();
 };
 
-/* STORAGE */
+/* =========================
+   STORAGE
+========================= */
+
 function getHabits(){
   return JSON.parse(localStorage.getItem("habits")) || [];
 }
@@ -14,7 +36,10 @@ function saveHabits(data){
   localStorage.setItem("habits", JSON.stringify(data));
 }
 
-/* DATE HELPERS */
+/* =========================
+   DATE HELPERS
+========================= */
+
 function today(){
   return new Date().toLocaleDateString("en-CA");
 }
@@ -25,12 +50,16 @@ function yesterday(){
   return d.toLocaleDateString("en-CA");
 }
 
-/* ADD */
+/* =========================
+   ADD HABIT
+========================= */
+
 document.getElementById("addBtn").onclick = () => {
   const input = document.getElementById("habitInput");
   if(!input.value.trim()) return;
 
   const habits = getHabits();
+
   habits.push({
     text: input.value,
     completed:false,
@@ -44,13 +73,19 @@ document.getElementById("addBtn").onclick = () => {
   renderAll();
 };
 
-/* RENDER ALL */
+/* =========================
+   RENDER ALL
+========================= */
+
 function renderAll(){
   renderHabits();
   renderStats();
 }
 
-/* RENDER HABITS */
+/* =========================
+   RENDER HABITS
+========================= */
+
 function renderHabits(){
   const list = document.getElementById("habitList");
   const bar = document.getElementById("progress-bar");
@@ -87,27 +122,36 @@ function renderHabits(){
     list.appendChild(card);
   });
 
-  bar.style.width = habits.length ? (done/habits.length)*100 + "%" : "0%";
+  bar.style.width = habits.length
+    ? (done/habits.length  )*100 + "%"
+    : "0%";
+
   text.innerText = `${done}/${habits.length} completed today`;
 }
 
-/* TOGGLE */
+/* =========================
+   TOGGLE HABIT
+========================= */
+
 function toggle(i){
   const habits = getHabits();
   const h = habits[i];
 
   if(h.completed) return;
 
-  h.completed=true;
+  h.completed = true;
   h.history[today()] = true;
-  h.streak = h.last===yesterday()? h.streak+1 : 1;
+  h.streak = h.last === yesterday() ? h.streak+1 : 1;
   h.last = today();
 
   saveHabits(habits);
   renderAll();
 }
 
-/* DELETE */
+/* =========================
+   DELETE
+========================= */
+
 function removeHabit(i){
   const habits = getHabits();
   habits.splice(i,1);
@@ -115,19 +159,27 @@ function removeHabit(i){
   renderAll();
 }
 
-/* RESET DAILY */
+/* =========================
+   DAILY RESET
+========================= */
+
 function resetDaily(){
   const habits = getHabits();
+
   habits.forEach(h=>{
     if(h.last !== today()){
       if(h.last !== yesterday()) h.streak=0;
       h.completed=false;
     }
   });
+
   saveHabits(habits);
 }
 
-/* STATS */
+/* =========================
+   STATS
+========================= */
+
 function renderStats(){
   const stats = document.getElementById("statsContent");
   const habits = getHabits();
@@ -136,8 +188,8 @@ function renderStats(){
   let best=0;
 
   habits.forEach(h=>{
-    total+=Object.keys(h.history).length;
-    if(h.streak>best) best=h.streak;
+    total += Object.keys(h.history).length;
+    if(h.streak > best) best = h.streak;
   });
 
   stats.innerHTML = `
@@ -150,7 +202,10 @@ function renderStats(){
   `;
 }
 
-/* CLOCK */
+/* =========================
+   CLOCK
+========================= */
+
 function startClock(){
   setInterval(()=>{
     document.getElementById("clock").innerText =
@@ -167,13 +222,17 @@ function showDate(){
     });
 }
 
-/* TABS */
-document.getElementById("habitsTab").onclick = ()=>{
-  switchTab("habits");
-};
-document.getElementById("statsTab").onclick = ()=>{
-  switchTab("stats");
-};
+/* =========================
+   TABS
+========================= */
+
+const habitsTab = document.getElementById("habitsTab");
+const statsTab = document.getElementById("statsTab");
+const habitsView = document.getElementById("habitsView");
+const statsView = document.getElementById("statsView");
+
+habitsTab.onclick = ()=>switchTab("habits");
+statsTab.onclick = ()=>switchTab("stats");
 
 function switchTab(tab){
   document.querySelectorAll(".tabs button")
