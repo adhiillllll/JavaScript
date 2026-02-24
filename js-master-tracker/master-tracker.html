@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Master Tracker</title>
+  <link rel="stylesheet" href="master-tracker.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <h1 class="app-title">JS Master Tracker</h1>
+      <div class="header-right">
+        <span class="date" id="currentDate"></span>
+        <div class="streak-badge">
+          🔥 <span id="streakCount">0</span> Day Streak
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="dashboard">
+
+      <!-- Learning Section -->
+      <section class="card learning-card">
+        <h2>📘 Today's Learning</h2>
+
+        <form id="learningForm">
+          <input type="text" id="topicInput" placeholder="Enter topic..." required>
+          <textarea id="notesInput" placeholder="Write notes..."></textarea>
+          <button type="submit" class="btn-primary">Add Learning</button>
+        </form>
+
+        <ul id="learningList" class="list"></ul>
+      </section>
+
+      <!-- Progress Section -->
+      <section class="card progress-card">
+        <h2>📊 Topic Progress</h2>
+        <div id="progressContainer"></div>
+      </section>
+
+      <!-- Interview Section -->
+      <section class="card interview-card">
+        <h2>💡 Interview Question Bank</h2>
+
+        <form id="questionForm">
+          <input type="text" id="questionInput" placeholder="Enter question..." required>
+          <textarea id="answerInput" placeholder="Enter answer..."></textarea>
+          <button type="submit" class="btn-primary">Add Question</button>
+        </form>
+
+        <ul id="questionList" class="list"></ul>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="master-tracker.js"></script>
+</body>
+</html>
