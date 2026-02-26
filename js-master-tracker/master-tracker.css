@@ -128,5 +128,38 @@ textarea:focus {
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 8px;
-  font-size: 14px;
+}
+
+/* Learning Item Layout */
+
+.learning-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.learning-item button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Progress Bar */
+
+.progress-bar {
+  background: #e5e7eb;
+  height: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-fill {
+  background: #3b82f6;
+  height: 100%;
+  transition: 0.3s ease;
 }
