@@ -25,7 +25,7 @@
     <main class="dashboard">
 
       <!-- Learning Section -->
-      <section class="card learning-card">
+      <section class="card">
         <h2>📘 Today's Learning</h2>
 
         <form id="learningForm">
@@ -38,15 +38,22 @@
       </section>
 
       <!-- Progress Section -->
-      <section class="card progress-card">
+      <section class="card">
         <h2>📊 Topic Progress</h2>
         <div id="progressContainer"></div>
       </section>
 
-      <!-- Interview Section (UI only for now) -->
-      <section class="card interview-card">
+      <!-- Interview Section -->
+      <section class="card">
         <h2>💡 Interview Question Bank</h2>
-        <p>Coming Soon...</p>
+
+        <form id="questionForm">
+          <input type="text" id="questionInput" placeholder="Enter question..." required>
+          <textarea id="answerInput" placeholder="Enter answer..."></textarea>
+          <button type="submit" class="btn-primary">Add Question</button>
+        </form>
+
+        <ul id="questionList" class="list"></ul>
       </section>
 
     </main>
