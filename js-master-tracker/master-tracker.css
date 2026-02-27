@@ -163,3 +163,25 @@ textarea:focus {
   height: 100%;
   transition: 0.3s ease;
 }
+/* Question Item */
+
+.question-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.question-item button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.revised-text {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
