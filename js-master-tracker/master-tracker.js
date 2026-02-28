@@ -2,6 +2,7 @@
 // ELEMENTS
 // ==========================
 const dateElement = document.getElementById("currentDate");
+const streakElement = document.getElementById("streakCount");
 
 // Learning
 const learningForm = document.getElementById("learningForm");
@@ -22,6 +23,11 @@ const questionList = document.getElementById("questionList");
 let learnings = JSON.parse(localStorage.getItem("learnings")) || [];
 let questions = JSON.parse(localStorage.getItem("questions")) || [];
 
+let streakData = JSON.parse(localStorage.getItem("streakData")) || {
+  count: 0,
+  lastDate: null
+};
+
 // ==========================
 // INIT
 // ==========================
@@ -29,6 +35,7 @@ function init() {
   showDate();
   renderLearnings();
   renderQuestions();
+  updateStreakUI();
 }
 init();
 
@@ -38,6 +45,40 @@ init();
 function showDate() {
   const today = new Date();
   dateElement.textContent = today.toDateString();
+}
+
+// ==========================
+// STREAK LOGIC
+// ==========================
+function updateStreak() {
+  const today = new Date().toDateString();
+
+  if (streakData.lastDate === today) return;
+
+  if (streakData.lastDate === null) {
+    streakData.count = 1;
+  } else {
+    const last = new Date(streakData.lastDate);
+    const now = new Date(today);
+
+    const diffTime = now - last;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays === 1) {
+      streakData.count += 1;
+    } else {
+      streakData.count = 1;
+    }
+  }
+
+  streakData.lastDate = today;
+
+  localStorage.setItem("streakData", JSON.stringify(streakData));
+  updateStreakUI();
+}
+
+function updateStreakUI() {
+  streakElement.textContent = streakData.count;
 }
 
 // ==========================
@@ -58,6 +99,8 @@ learningForm.addEventListener("submit", function(e) {
   saveLearnings();
   renderLearnings();
   learningForm.reset();
+
+  updateStreak(); // 🔥 streak update happens here
 });
 
 function renderLearnings() {
