@@ -4,14 +4,12 @@
 const dateElement = document.getElementById("currentDate");
 const streakElement = document.getElementById("streakCount");
 
-// Learning
 const learningForm = document.getElementById("learningForm");
 const topicInput = document.getElementById("topicInput");
 const notesInput = document.getElementById("notesInput");
 const learningList = document.getElementById("learningList");
 const progressContainer = document.getElementById("progressContainer");
 
-// Questions
 const questionForm = document.getElementById("questionForm");
 const questionInput = document.getElementById("questionInput");
 const answerInput = document.getElementById("answerInput");
@@ -37,42 +35,35 @@ function init() {
   renderQuestions();
   updateStreakUI();
 }
+
 init();
 
 // ==========================
 // DATE
 // ==========================
 function showDate() {
-  const today = new Date();
-  dateElement.textContent = today.toDateString();
+  dateElement.textContent = new Date().toDateString();
 }
 
 // ==========================
-// STREAK LOGIC
+// STREAK
 // ==========================
 function updateStreak() {
   const today = new Date().toDateString();
 
   if (streakData.lastDate === today) return;
 
-  if (streakData.lastDate === null) {
+  if (!streakData.lastDate) {
     streakData.count = 1;
   } else {
     const last = new Date(streakData.lastDate);
     const now = new Date(today);
+    const diffDays = (now - last) / (1000 * 60 * 60 * 24);
 
-    const diffTime = now - last;
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-    if (diffDays === 1) {
-      streakData.count += 1;
-    } else {
-      streakData.count = 1;
-    }
+    streakData.count = diffDays === 1 ? streakData.count + 1 : 1;
   }
 
   streakData.lastDate = today;
-
   localStorage.setItem("streakData", JSON.stringify(streakData));
   updateStreakUI();
 }
@@ -82,9 +73,9 @@ function updateStreakUI() {
 }
 
 // ==========================
-// LEARNING SECTION
+// LEARNING
 // ==========================
-learningForm.addEventListener("submit", function(e) {
+learningForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const newLearning = {
@@ -99,8 +90,7 @@ learningForm.addEventListener("submit", function(e) {
   saveLearnings();
   renderLearnings();
   learningForm.reset();
-
-  updateStreak(); // 🔥 streak update happens here
+  updateStreak();
 });
 
 function renderLearnings() {
@@ -110,21 +100,17 @@ function renderLearnings() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <div class="learning-item">
-        <input type="checkbox"
-          ${item.completed ? "checked" : ""}
-          onclick="toggleComplete(${item.id})" />
-
+      <div class="learning-item" data-id="${item.id}">
+        <input type="checkbox" ${item.completed ? "checked" : ""} class="toggle-complete"/>
         <div>
-          <strong style="${item.completed ? "text-decoration: line-through;" : ""}">
+          <strong class="${item.completed ? "revised-text" : ""}">
             ${item.topic}
           </strong>
           <br/>
           <small>${item.date}</small>
           <p>${item.notes}</p>
         </div>
-
-        <button onclick="deleteLearning(${item.id})">Delete</button>
+        <button class="delete-learning">Delete</button>
       </div>
     `;
 
@@ -134,30 +120,31 @@ function renderLearnings() {
   updateProgress();
 }
 
-function deleteLearning(id) {
-  learnings = learnings.filter(item => item.id !== id);
+// Event Delegation
+learningList.addEventListener("click", (e) => {
+  const parent = e.target.closest(".learning-item");
+  if (!parent) return;
+
+  const id = Number(parent.dataset.id);
+
+  if (e.target.classList.contains("delete-learning")) {
+    learnings = learnings.filter(item => item.id !== id);
+  }
+
+  if (e.target.classList.contains("toggle-complete")) {
+    learnings = learnings.map(item =>
+      item.id === id ? { ...item, completed: !item.completed } : item
+    );
+  }
+
   saveLearnings();
   renderLearnings();
-}
-
-function toggleComplete(id) {
-  learnings = learnings.map(item => {
-    if (item.id === id) {
-      return { ...item, completed: !item.completed };
-    }
-    return item;
-  });
-
-  saveLearnings();
-  renderLearnings();
-}
+});
 
 function updateProgress() {
   const total = learnings.length;
   const completed = learnings.filter(item => item.completed).length;
-
-  const percentage = total === 0 ? 0 :
-    Math.round((completed / total) * 100);
+  const percentage = total ? Math.round((completed / total) * 100) : 0;
 
   progressContainer.innerHTML = `
     <p>${completed} / ${total} Completed</p>
@@ -173,9 +160,9 @@ function saveLearnings() {
 }
 
 // ==========================
-// QUESTION SECTION
+// QUESTIONS
 // ==========================
-questionForm.addEventListener("submit", function(e) {
+questionForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const newQuestion = {
@@ -198,19 +185,15 @@ function renderQuestions() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <div class="question-item">
-        <input type="checkbox"
-          ${item.revised ? "checked" : ""}
-          onclick="toggleRevised(${item.id})" />
-
+      <div class="question-item" data-id="${item.id}">
+        <input type="checkbox" ${item.revised ? "checked" : ""} class="toggle-revised"/>
         <div>
           <strong class="${item.revised ? "revised-text" : ""}">
             ${item.question}
           </strong>
           <p>${item.answer}</p>
         </div>
-
-        <button onclick="deleteQuestion(${item.id})">Delete</button>
+        <button class="delete-question">Delete</button>
       </div>
     `;
 
@@ -218,23 +201,25 @@ function renderQuestions() {
   });
 }
 
-function toggleRevised(id) {
-  questions = questions.map(item => {
-    if (item.id === id) {
-      return { ...item, revised: !item.revised };
-    }
-    return item;
-  });
+questionList.addEventListener("click", (e) => {
+  const parent = e.target.closest(".question-item");
+  if (!parent) return;
+
+  const id = Number(parent.dataset.id);
+
+  if (e.target.classList.contains("delete-question")) {
+    questions = questions.filter(item => item.id !== id);
+  }
+
+  if (e.target.classList.contains("toggle-revised")) {
+    questions = questions.map(item =>
+      item.id === id ? { ...item, revised: !item.revised } : item
+    );
+  }
 
   saveQuestions();
   renderQuestions();
-}
-
-function deleteQuestion(id) {
-  questions = questions.filter(item => item.id !== id);
-  saveQuestions();
-  renderQuestions();
-}
+});
 
 function saveQuestions() {
   localStorage.setItem("questions", JSON.stringify(questions));
