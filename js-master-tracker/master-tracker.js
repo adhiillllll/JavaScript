@@ -96,12 +96,19 @@ learningForm.addEventListener("submit", (e) => {
 function renderLearnings() {
   learningList.innerHTML = "";
 
+  if (learnings.length === 0) {
+    learningList.innerHTML = "<p>No learning added yet.</p>";
+    updateProgress();
+    return;
+  }
+
   learnings.forEach(item => {
     const li = document.createElement("li");
 
     li.innerHTML = `
       <div class="learning-item" data-id="${item.id}">
         <input type="checkbox" ${item.completed ? "checked" : ""} class="toggle-complete"/>
+        
         <div>
           <strong class="${item.completed ? "revised-text" : ""}">
             ${item.topic}
@@ -110,7 +117,11 @@ function renderLearnings() {
           <small>${item.date}</small>
           <p>${item.notes}</p>
         </div>
-        <button class="delete-learning">Delete</button>
+
+        <div>
+          <button class="edit-learning">Edit</button>
+          <button class="delete-learning">Delete</button>
+        </div>
       </div>
     `;
 
@@ -127,14 +138,30 @@ learningList.addEventListener("click", (e) => {
 
   const id = Number(parent.dataset.id);
 
+  // Delete
   if (e.target.classList.contains("delete-learning")) {
     learnings = learnings.filter(item => item.id !== id);
   }
 
+  // Toggle
   if (e.target.classList.contains("toggle-complete")) {
     learnings = learnings.map(item =>
       item.id === id ? { ...item, completed: !item.completed } : item
     );
+  }
+
+  // Edit
+  if (e.target.classList.contains("edit-learning")) {
+    const item = learnings.find(l => l.id === id);
+
+    const newTopic = prompt("Edit topic:", item.topic);
+    const newNotes = prompt("Edit notes:", item.notes);
+
+    if (newTopic !== null && newNotes !== null) {
+      learnings = learnings.map(l =>
+        l.id === id ? { ...l, topic: newTopic, notes: newNotes } : l
+      );
+    }
   }
 
   saveLearnings();
@@ -181,19 +208,29 @@ questionForm.addEventListener("submit", (e) => {
 function renderQuestions() {
   questionList.innerHTML = "";
 
+  if (questions.length === 0) {
+    questionList.innerHTML = "<p>No questions added yet.</p>";
+    return;
+  }
+
   questions.forEach(item => {
     const li = document.createElement("li");
 
     li.innerHTML = `
       <div class="question-item" data-id="${item.id}">
         <input type="checkbox" ${item.revised ? "checked" : ""} class="toggle-revised"/>
+
         <div>
           <strong class="${item.revised ? "revised-text" : ""}">
             ${item.question}
           </strong>
           <p>${item.answer}</p>
         </div>
-        <button class="delete-question">Delete</button>
+
+        <div>
+          <button class="edit-question">Edit</button>
+          <button class="delete-question">Delete</button>
+        </div>
       </div>
     `;
 
@@ -215,6 +252,21 @@ questionList.addEventListener("click", (e) => {
     questions = questions.map(item =>
       item.id === id ? { ...item, revised: !item.revised } : item
     );
+  }
+
+  if (e.target.classList.contains("edit-question")) {
+    const item = questions.find(q => q.id === id);
+
+    const newQuestion = prompt("Edit question:", item.question);
+    const newAnswer = prompt("Edit answer:", item.answer);
+
+    if (newQuestion !== null && newAnswer !== null) {
+      questions = questions.map(q =>
+        q.id === id
+          ? { ...q, question: newQuestion, answer: newAnswer }
+          : q
+      );
+    }
   }
 
   saveQuestions();
