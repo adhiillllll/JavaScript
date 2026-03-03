@@ -15,6 +15,12 @@ const questionInput = document.getElementById("questionInput");
 const answerInput = document.getElementById("answerInput");
 const questionList = document.getElementById("questionList");
 
+const learningSearch = document.getElementById("learningSearch");
+const learningFilter = document.getElementById("learningFilter");
+
+const questionSearch = document.getElementById("questionSearch");
+const questionFilter = document.getElementById("questionFilter");
+
 // ==========================
 // DATA
 // ==========================
@@ -37,6 +43,12 @@ function init() {
 }
 
 init();
+
+learningSearch.addEventListener("input", renderLearnings);
+learningFilter.addEventListener("change", renderLearnings);
+
+questionSearch.addEventListener("input", renderQuestions);
+questionFilter.addEventListener("change", renderQuestions);
 
 // ==========================
 // DATE
@@ -96,13 +108,28 @@ learningForm.addEventListener("submit", (e) => {
 function renderLearnings() {
   learningList.innerHTML = "";
 
-  if (learnings.length === 0) {
-    learningList.innerHTML = "<p>No learning added yet.</p>";
+  const searchValue = learningSearch.value.toLowerCase();
+  const filterValue = learningFilter.value;
+
+  let filtered = learnings.filter(item =>
+    item.topic.toLowerCase().includes(searchValue)
+  );
+
+  if (filterValue === "completed") {
+    filtered = filtered.filter(item => item.completed);
+  }
+
+  if (filterValue === "pending") {
+    filtered = filtered.filter(item => !item.completed);
+  }
+
+  if (filtered.length === 0) {
+    learningList.innerHTML = "<p>No matching learning found.</p>";
     updateProgress();
     return;
   }
 
-  learnings.forEach(item => {
+  filtered.forEach(item => {
     const li = document.createElement("li");
 
     li.innerHTML = `
@@ -157,7 +184,7 @@ learningList.addEventListener("click", (e) => {
     const newTopic = prompt("Edit topic:", item.topic);
     const newNotes = prompt("Edit notes:", item.notes);
 
-    if (newTopic !== null && newNotes !== null) {
+    if (newTopic && newNotes) {
       learnings = learnings.map(l =>
         l.id === id ? { ...l, topic: newTopic, notes: newNotes } : l
       );
@@ -208,12 +235,27 @@ questionForm.addEventListener("submit", (e) => {
 function renderQuestions() {
   questionList.innerHTML = "";
 
-  if (questions.length === 0) {
-    questionList.innerHTML = "<p>No questions added yet.</p>";
+  const searchValue = questionSearch.value.toLowerCase();
+  const filterValue = questionFilter.value;
+
+  let filtered = questions.filter(item =>
+    item.question.toLowerCase().includes(searchValue)
+  );
+
+  if (filterValue === "revised") {
+    filtered = filtered.filter(item => item.revised);
+  }
+
+  if (filterValue === "not-revised") {
+    filtered = filtered.filter(item => !item.revised);
+  }
+
+  if (filtered.length === 0) {
+    questionList.innerHTML = "<p>No matching question found.</p>";
     return;
   }
 
-  questions.forEach(item => {
+  filtered.forEach(item => {
     const li = document.createElement("li");
 
     li.innerHTML = `
