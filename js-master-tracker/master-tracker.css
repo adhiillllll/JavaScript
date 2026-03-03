@@ -139,13 +139,16 @@ textarea:focus {
   gap: 10px;
 }
 
-.learning-item button {
-  background: #ef4444;
+.edit-learning,
+.edit-question {
+  background: #10b981;  /* green */
   color: white;
-  border: none;
-  padding: 5px 8px;
-  border-radius: 8px;
-  cursor: pointer;
+}
+
+.delete-learning,
+.delete-question {
+  background: #ef4444;  /* red */
+  color: white;
 }
 
 /* Progress Bar */

@@ -8,58 +8,72 @@
 </head>
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <!-- Header -->
-    <header class="header">
-      <h1 class="app-title">JS Master Tracker</h1>
-      <div class="header-right">
-        <span class="date" id="currentDate"></span>
-        <div class="streak-badge">
-          🔥 <span id="streakCount">0</span> Day Streak
-        </div>
+  <!-- Header -->
+  <header class="header">
+    <h1 class="app-title">JS Master Tracker</h1>
+    <div class="header-right">
+      <span id="currentDate"></span>
+      <div class="streak-badge">
+        🔥 <span id="streakCount">0</span> Day Streak
       </div>
-    </header>
+    </div>
+  </header>
+  
 
-    <!-- Main Grid -->
-    <main class="dashboard">
+  <main class="dashboard">
 
-      <!-- Learning Section -->
-      <section class="card">
-        <h2>📘 Today's Learning</h2>
+    <!-- Learning Section -->
+    <section class="card">
+      <h2>📘 Today's Learning</h2>
 
-        <form id="learningForm">
-          <input type="text" id="topicInput" placeholder="Enter topic..." required>
-          <textarea id="notesInput" placeholder="Write notes..."></textarea>
-          <button type="submit" class="btn-primary">Add Learning</button>
-        </form>
+      <form id="learningForm">
+        <input type="text" id="topicInput" placeholder="Enter topic..." required>
+        <textarea id="notesInput" placeholder="Write notes..."></textarea>
+        <button type="submit" class="btn-primary">Add Learning</button>
+      </form>
 
-        <ul id="learningList" class="list"></ul>
-      </section>
+      <input type="text" id="learningSearch" placeholder="Search learning..." />
+      <select id="learningFilter">
+        <option value="all">All</option>
+        <option value="completed">Completed</option>
+        <option value="pending">Pending</option>
+      </select>
 
-      <!-- Progress Section -->
-      <section class="card">
-        <h2>📊 Topic Progress</h2>
-        <div id="progressContainer"></div>
-      </section>
+      <ul id="learningList" class="list"></ul>
+    </section>
 
-      <!-- Interview Section -->
-      <section class="card">
-        <h2>💡 Interview Question Bank</h2>
+    <!-- Progress Section -->
+    <section class="card">
+      <h2>📊 Topic Progress</h2>
+      <div id="progressContainer"></div>
+    </section>
 
-        <form id="questionForm">
-          <input type="text" id="questionInput" placeholder="Enter question..." required>
-          <textarea id="answerInput" placeholder="Enter answer..."></textarea>
-          <button type="submit" class="btn-primary">Add Question</button>
-        </form>
+    <!-- Question Section -->
+    <section class="card">
+      <h2>💡 Interview Question Bank</h2>
 
-        <ul id="questionList" class="list"></ul>
-      </section>
+      <form id="questionForm">
+        <input type="text" id="questionInput" placeholder="Enter question..." required>
+        <textarea id="answerInput" placeholder="Enter answer..."></textarea>
+        <button type="submit" class="btn-primary">Add Question</button>
+      </form>
 
-    </main>
+      <input type="text" id="questionSearch" placeholder="Search question..." />
+      <select id="questionFilter">
+        <option value="all">All</option>
+        <option value="revised">Revised</option>
+        <option value="not-revised">Not Revised</option>
+      </select>
 
-  </div>
+      <ul id="questionList" class="list"></ul>
+    </section>
 
-  <script src="master-tracker.js"></script>
+  </main>
+
+</div>
+
+<script src="master-tracker.js"></script>
 </body>
 </html>
