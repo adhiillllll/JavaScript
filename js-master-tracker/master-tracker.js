@@ -20,6 +20,7 @@ const learningFilter = document.getElementById("learningFilter");
 
 const questionSearch = document.getElementById("questionSearch");
 const questionFilter = document.getElementById("questionFilter");
+const themeToggle = document.getElementById("themeToggle");
 
 // ==========================
 // DATA
@@ -49,6 +50,32 @@ learningFilter.addEventListener("change", renderLearnings);
 
 questionSearch.addEventListener("input", renderQuestions);
 questionFilter.addEventListener("change", renderQuestions);
+
+// ==========================
+// THEME
+// ==========================
+
+function setupTheme() {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "🌞 Light Mode";
+  }
+
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    themeToggle.textContent = isDark
+      ? "🌞 Light Mode"
+      : "🌙 Dark Mode";
+  });
+}
+
+setupTheme();
 
 // ==========================
 // DATE

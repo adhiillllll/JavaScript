@@ -188,3 +188,46 @@ textarea:focus {
   text-decoration: line-through;
   opacity: 0.6;
 }
+
+body.dark {
+  background: #111827;
+  color: #f9fafb;
+}
+
+body.dark .card {
+  background: #1f2937;
+  box-shadow: none;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: #374151;
+  color: white;
+  border: 1px solid #4b5563;
+}
+
+body.dark .streak-badge {
+  background: #374151;
+}
+
+body.dark .progress-bar {
+  background: #374151;
+}
+
+body.dark .progress-fill {
+  background: #10b981;
+}
+body.dark .list li {
+  background: #374151;
+  color: white;
+}
+
+body.dark .learning-item,
+body.dark .question-item {
+  background: transparent;
+}
+
+body.dark .header {
+  color: white;
+}
