@@ -22,6 +22,8 @@ const questionSearch = document.getElementById("questionSearch");
 const questionFilter = document.getElementById("questionFilter");
 const themeToggle = document.getElementById("themeToggle");
 
+const learningSort = document.getElementById("learningSort");
+
 // ==========================
 // DATA
 // ==========================
@@ -50,6 +52,8 @@ learningFilter.addEventListener("change", renderLearnings);
 
 questionSearch.addEventListener("input", renderQuestions);
 questionFilter.addEventListener("change", renderQuestions);
+
+learningSort.addEventListener("change", renderLearnings);
 
 // ==========================
 // THEME
@@ -155,6 +159,16 @@ function renderLearnings() {
     updateProgress();
     return;
   }
+
+  const sortValue = learningSort.value;
+
+if (sortValue === "newest") {
+  filtered.sort((a, b) => b.id - a.id);
+}
+
+if (sortValue === "oldest") {
+  filtered.sort((a, b) => a.id - b.id);
+}
 
   filtered.forEach(item => {
     const li = document.createElement("li");
