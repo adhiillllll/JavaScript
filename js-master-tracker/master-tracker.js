@@ -23,6 +23,8 @@ const questionFilter = document.getElementById("questionFilter");
 const themeToggle = document.getElementById("themeToggle");
 
 const learningSort = document.getElementById("learningSort");
+const exportBtn = document.getElementById("exportData");
+const importInput = document.getElementById("importData");
 
 // ==========================
 // DATA
@@ -359,3 +361,56 @@ questionList.addEventListener("click", (e) => {
 function saveQuestions() {
   localStorage.setItem("questions", JSON.stringify(questions));
 }
+
+exportBtn.addEventListener("click", () => {
+  const data = {
+    learnings,
+    questions,
+    streakData
+  };
+
+  const json = JSON.stringify(data, null, 2);
+
+  const blob = new Blob([json], { type: "application/json" });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "js-master-tracker-backup.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+importInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    try {
+      const data = JSON.parse(event.target.result);
+
+      learnings = data.learnings || [];
+      questions = data.questions || [];
+      streakData = data.streakData || { count: 0, lastDate: null };
+
+      saveLearnings();
+      saveQuestions();
+      localStorage.setItem("streakData", JSON.stringify(streakData));
+
+      renderLearnings();
+      renderQuestions();
+      updateStreakUI();
+
+      alert("Data imported successfully!");
+    } catch (err) {
+      alert("Invalid backup file.");
+    }
+  };
+
+  reader.readAsText(file);
+});

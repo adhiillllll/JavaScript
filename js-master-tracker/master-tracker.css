@@ -231,3 +231,9 @@ body.dark .question-item {
 body.dark .header {
   color: white;
 }
+
+.backup-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
