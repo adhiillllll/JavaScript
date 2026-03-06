@@ -9,6 +9,7 @@ const topicInput = document.getElementById("topicInput");
 const notesInput = document.getElementById("notesInput");
 const learningList = document.getElementById("learningList");
 const progressContainer = document.getElementById("progressContainer");
+const statsContainer = document.getElementById("statsContainer");
 
 const questionForm = document.getElementById("questionForm");
 const questionInput = document.getElementById("questionInput");
@@ -157,18 +158,19 @@ function renderLearnings() {
   }
 
   if (filtered.length === 0) {
-    learningList.innerHTML = "<p>No matching learning found.</p>";
-    updateProgress();
-    return;
+  learningList.innerHTML = "<p>No matching learning found.</p>";
+  updateProgress();
+  updateStats();   
+  return;
   }
 
   const sortValue = learningSort.value;
 
 if (sortValue === "newest") {
   filtered.sort((a, b) => b.id - a.id);
-}
+} 
 
-if (sortValue === "oldest") {
+else if (sortValue === "oldest") {
   filtered.sort((a, b) => a.id - b.id);
 }
 
@@ -199,6 +201,7 @@ if (sortValue === "oldest") {
   });
 
   updateProgress();
+  updateStats();
 }
 
 // Event Delegation
@@ -254,6 +257,26 @@ function updateProgress() {
 
 function saveLearnings() {
   localStorage.setItem("learnings", JSON.stringify(learnings));
+}
+
+function updateStats() {
+
+  const total = learnings.length;
+
+  const completed = learnings.filter(item => item.completed).length;
+
+  const pending = total - completed;
+
+  const completionRate = total === 0
+    ? 0
+    : Math.round((completed / total) * 100);
+
+  statsContainer.innerHTML = `
+    <p>Total Learnings: ${total}</p>
+    <p>Completed: ${completed}</p>
+    <p>Pending: ${pending}</p>
+    <p>Completion Rate: ${completionRate}%</p>
+  `;
 }
 
 // ==========================

@@ -73,6 +73,12 @@ body {
   font-size: 20px;
 }
 
+.card hr {
+  border: none;
+  height: 1px;
+  background: #e5e7eb;
+}
+
 /* Forms */
 
 form {
