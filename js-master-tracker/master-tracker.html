@@ -5,6 +5,7 @@
   <title>JS Master Tracker</title>
   <link rel="stylesheet" href="master-tracker.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -60,15 +61,26 @@
 
     <!-- Progress Section -->
     <section class="card">
-        <h2>📊 Learning Progress</h2>
+      <h2>📊 Learning Progress</h2>
 
-        <div id="progressContainer"></div>
+      <div id="progressContainer"></div>
+    </section>
 
-        <hr style="margin:20px 0;">
+    <section class="card">
+      <h2>📊 Statistics</h2>
 
-        <h3>Statistics</h3>
-        <div id="statsContainer"></div>
+      <div id="statsContainer"></div>
+    </section>
 
+    <section class="card">
+      <h2>📈 Learning Chart</h2>
+
+      <canvas id="learningChart"></canvas>
+    </section>
+
+    <section class="card heatmap-card">
+      <h2>🟩 Learning Activity</h2>
+      <div id="learningHeatmap" class="heatmap"></div>
     </section>
 
     <!-- Question Section -->

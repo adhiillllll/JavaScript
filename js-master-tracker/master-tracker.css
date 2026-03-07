@@ -1,8 +1,12 @@
+/* =========================
+GLOBAL RESET
+========================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 body {
@@ -17,7 +21,9 @@ body {
   margin: auto;
 }
 
-/* Header */
+/* =========================
+HEADER
+========================= */
 
 .header {
   display: flex;
@@ -46,15 +52,35 @@ body {
   font-weight: 600;
 }
 
-/* Dashboard Grid */
+/* =========================
+BACKUP BUTTONS
+========================= */
+
+.backup-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* =========================
+DASHBOARD GRID
+========================= */
 
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
-/* Cards */
+/* Chart full width */
+
+.chart-card {
+  grid-column: span 2;
+}
+
+/* =========================
+CARDS
+========================= */
 
 .card {
   background: #ffffff;
@@ -79,7 +105,9 @@ body {
   background: #e5e7eb;
 }
 
-/* Forms */
+/* =========================
+FORMS
+========================= */
 
 form {
   display: flex;
@@ -88,7 +116,9 @@ form {
   margin-bottom: 15px;
 }
 
-input, textarea {
+input,
+textarea,
+select {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid #d1d5db;
@@ -101,12 +131,15 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #3b82f6;
 }
 
-/* Buttons */
+/* =========================
+BUTTONS
+========================= */
 
 .btn-primary {
   background: #3b82f6;
@@ -123,7 +156,9 @@ textarea:focus {
   background: #2563eb;
 }
 
-/* Lists */
+/* =========================
+LIST ITEMS
+========================= */
 
 .list {
   list-style: none;
@@ -136,7 +171,9 @@ textarea:focus {
   margin-bottom: 8px;
 }
 
-/* Learning Item Layout */
+/* =========================
+LEARNING ITEM
+========================= */
 
 .learning-item {
   display: flex;
@@ -147,17 +184,27 @@ textarea:focus {
 
 .edit-learning,
 .edit-question {
-  background: #10b981;  /* green */
+  background: #10b981;
   color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .delete-learning,
 .delete-question {
-  background: #ef4444;  /* red */
+  background: #ef4444;
   color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/* Progress Bar */
+/* =========================
+PROGRESS BAR
+========================= */
 
 .progress-bar {
   background: #e5e7eb;
@@ -172,7 +219,10 @@ textarea:focus {
   height: 100%;
   transition: 0.3s ease;
 }
-/* Question Item */
+
+/* =========================
+QUESTION ITEMS
+========================= */
 
 .question-item {
   display: flex;
@@ -190,10 +240,18 @@ textarea:focus {
   cursor: pointer;
 }
 
+/* =========================
+TEXT STYLE
+========================= */
+
 .revised-text {
   text-decoration: line-through;
   opacity: 0.6;
 }
+
+/* =========================
+DARK MODE
+========================= */
 
 body.dark {
   background: #111827;
@@ -224,6 +282,7 @@ body.dark .progress-bar {
 body.dark .progress-fill {
   background: #10b981;
 }
+
 body.dark .list li {
   background: #374151;
   color: white;
@@ -238,8 +297,41 @@ body.dark .header {
   color: white;
 }
 
-.backup-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+/* =========================
+RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card {
+    grid-column: span 1;
+  }
 }
+
+/* ======================
+GITHUB HEATMAP
+====================== */
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(14, 20px);
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.heatmap-day {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #e5e7eb;
+}
+
+/* activity colors */
+
+.level-1 { background: #9be9a8; }
+.level-2 { background: #40c463; }
+.level-3 { background: #30a14e; }
+.level-4 { background: #216e39; }

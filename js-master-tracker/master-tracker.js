@@ -18,6 +18,7 @@ const questionList = document.getElementById("questionList");
 
 const learningSearch = document.getElementById("learningSearch");
 const learningFilter = document.getElementById("learningFilter");
+const chartCanvas = document.getElementById("learningChart");
 
 const questionSearch = document.getElementById("questionSearch");
 const questionFilter = document.getElementById("questionFilter");
@@ -32,6 +33,7 @@ const importInput = document.getElementById("importData");
 // ==========================
 let learnings = JSON.parse(localStorage.getItem("learnings")) || [];
 let questions = JSON.parse(localStorage.getItem("questions")) || [];
+let learningChart;
 
 let streakData = JSON.parse(localStorage.getItem("streakData")) || {
   count: 0,
@@ -46,6 +48,8 @@ function init() {
   renderLearnings();
   renderQuestions();
   updateStreakUI();
+  updateChart();
+  renderHeatmap();
 }
 
 init();
@@ -160,7 +164,8 @@ function renderLearnings() {
   if (filtered.length === 0) {
   learningList.innerHTML = "<p>No matching learning found.</p>";
   updateProgress();
-  updateStats();   
+  updateStats();  
+  renderHeatmap(); 
   return;
   }
 
@@ -178,30 +183,30 @@ else if (sortValue === "oldest") {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <div class="learning-item" data-id="${item.id}">
-        <input type="checkbox" ${item.completed ? "checked" : ""} class="toggle-complete"/>
-        
-        <div>
-          <strong class="${item.completed ? "revised-text" : ""}">
-            ${item.topic}
-          </strong>
-          <br/>
-          <small>${item.date}</small>
-          <p>${item.notes}</p>
-        </div>
+     <div class="learning-item" data-id="${item.id}">
+    <input type="checkbox" ${item.completed ? "checked" : ""} class="toggle-complete"/>
+    
+    <div>
+      <strong class="${item.completed ? "revised-text" : ""}">
+        ${item.topic}
+      </strong>
+      <br/>
+      <small>${item.date}</small>
+      <p>${item.notes}</p>
+    </div>
 
-        <div>
-          <button class="edit-learning">Edit</button>
-          <button class="delete-learning">Delete</button>
-        </div>
-      </div>
+    <div>
+      <button class="edit-learning">Edit</button>
+      <button class="delete-learning">Delete</button>
+    </div>
+    </div>
     `;
-
     learningList.appendChild(li);
   });
 
   updateProgress();
   updateStats();
+  updateChart();
 }
 
 // Event Delegation
@@ -277,6 +282,75 @@ function updateStats() {
     <p>Pending: ${pending}</p>
     <p>Completion Rate: ${completionRate}%</p>
   `;
+}
+
+function updateChart() {
+
+  if (!chartCanvas || typeof Chart === "undefined") {
+    return;
+  }
+
+  const completed = learnings.filter(l => l.completed).length;
+  const pending = learnings.length - completed;
+
+  if (learningChart) {
+    learningChart.destroy();
+  }
+
+  learningChart = new Chart(chartCanvas, {
+    type: "doughnut",
+    data: {
+      labels: ["Completed", "Pending"],
+      datasets: [{
+        data: [completed, pending],
+        backgroundColor: ["#10b981", "#ef4444"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "bottom"
+        }
+      }
+    }
+  });
+
+}
+
+
+//Git Hub model
+
+function renderHeatmap() {
+
+  const heatmap = document.getElementById("learningHeatmap");
+  heatmap.innerHTML = "";
+
+  const today = new Date();
+
+  for (let i = 90; i >= 0; i--) {
+
+    const date = new Date();
+    date.setDate(today.getDate() - i);
+
+    const dateString = date.toDateString();
+
+    const dayLearnings = learnings.filter(l => l.date === dateString);
+
+    const count = dayLearnings.length;
+
+    const cell = document.createElement("div");
+    cell.classList.add("heatmap-day");
+
+    if (count === 1) cell.classList.add("level-1");
+    if (count === 2) cell.classList.add("level-2");
+    if (count === 3) cell.classList.add("level-3");
+    if (count >= 4) cell.classList.add("level-4");
+
+    cell.title = dateString + " : " + count + " learnings";
+
+    heatmap.appendChild(cell);
+  }
 }
 
 // ==========================
@@ -428,6 +502,7 @@ importInput.addEventListener("change", (e) => {
       renderLearnings();
       renderQuestions();
       updateStreakUI();
+      updateChart()
 
       alert("Data imported successfully!");
     } catch (err) {
