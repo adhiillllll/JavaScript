@@ -343,3 +343,13 @@ GITHUB HEATMAP
 .level-2 { background: #40c463; }
 .level-3 { background: #30a14e; }
 .level-4 { background: #216e39; }
+
+.undo-box {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: #fef3c7;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}

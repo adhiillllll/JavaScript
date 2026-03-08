@@ -28,6 +28,8 @@ const learningSort = document.getElementById("learningSort");
 const exportBtn = document.getElementById("exportData");
 const importInput = document.getElementById("importData");
 const resetBtn = document.getElementById("resetData");
+const undoContainer = document.getElementById("undoContainer");
+const undoDeleteBtn = document.getElementById("undoDelete");
 
 // ==========================
 // DATA
@@ -35,6 +37,7 @@ const resetBtn = document.getElementById("resetData");
 let learnings = JSON.parse(localStorage.getItem("learnings")) || [];
 let questions = JSON.parse(localStorage.getItem("questions")) || [];
 let learningChart;
+let lastDeletedLearning = null;
 
 let streakData = JSON.parse(localStorage.getItem("streakData")) || {
   count: 0,
@@ -219,7 +222,19 @@ learningList.addEventListener("click", (e) => {
 
   // Delete
   if (e.target.classList.contains("delete-learning")) {
-    learnings = learnings.filter(item => item.id !== id);
+
+    const item = learnings.find(l => l.id === id);
+
+    lastDeletedLearning = item;
+
+    learnings = learnings.filter(l => l.id !== id);
+
+    undoContainer.style.display = "flex";
+
+    setTimeout(() => {
+      undoContainer.style.display = "none";
+      lastDeletedLearning = null;
+    }, 5000);
   }
 
   // Toggle
@@ -536,5 +551,21 @@ resetBtn.addEventListener("click", () => {
   updateStreakUI();
   updateChart();
   renderHeatmap();
+
+});
+
+
+undoDeleteBtn.addEventListener("click", () => {
+
+  if (!lastDeletedLearning) return;
+
+  learnings.push(lastDeletedLearning);
+
+  saveLearnings();
+  renderLearnings();
+
+  undoContainer.style.display = "none";
+
+  lastDeletedLearning = null;
 
 });
