@@ -62,6 +62,14 @@ BACKUP BUTTONS
   margin-bottom: 20px;
 }
 
+.reset-btn {
+  background: #ef4444;
+}
+
+.reset-btn:hover {
+  background: #dc2626;
+}
+
 /* =========================
 DASHBOARD GRID
 ========================= */

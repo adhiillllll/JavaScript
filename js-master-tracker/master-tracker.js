@@ -27,6 +27,7 @@ const themeToggle = document.getElementById("themeToggle");
 const learningSort = document.getElementById("learningSort");
 const exportBtn = document.getElementById("exportData");
 const importInput = document.getElementById("importData");
+const resetBtn = document.getElementById("resetData");
 
 // ==========================
 // DATA
@@ -511,4 +512,29 @@ importInput.addEventListener("change", (e) => {
   };
 
   reader.readAsText(file);
+});
+
+
+resetBtn.addEventListener("click", () => {
+
+  const confirmReset = confirm(
+    "This will delete ALL your data. Are you sure?"
+  );
+
+  if (!confirmReset) return;
+
+  localStorage.removeItem("learnings");
+  localStorage.removeItem("questions");
+  localStorage.removeItem("streakData");
+
+  learnings = [];
+  questions = [];
+  streakData = { count: 0, lastDate: null };
+
+  renderLearnings();
+  renderQuestions();
+  updateStreakUI();
+  updateChart();
+  renderHeatmap();
+
 });
