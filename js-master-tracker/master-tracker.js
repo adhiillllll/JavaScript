@@ -30,6 +30,7 @@ const importInput = document.getElementById("importData");
 const resetBtn = document.getElementById("resetData");
 const undoContainer = document.getElementById("undoContainer");
 const undoDeleteBtn = document.getElementById("undoDelete");
+const clearCompletedBtn = document.getElementById("clearCompleted");
 
 // ==========================
 // DATA
@@ -170,6 +171,7 @@ function renderLearnings() {
   updateProgress();
   updateStats();  
   renderHeatmap(); 
+  updateChart();
   return;
   }
 
@@ -244,22 +246,40 @@ learningList.addEventListener("click", (e) => {
     );
   }
 
-  // Edit
-  if (e.target.classList.contains("edit-learning")) {
-    const item = learnings.find(l => l.id === id);
+  // // ENABLE EDIT
+  // if (e.target.classList.contains("edit-learning")) {
 
-    const newTopic = prompt("Edit topic:", item.topic);
-    const newNotes = prompt("Edit notes:", item.notes);
+  //   const topicInput = parent.querySelector(".edit-topic");
+  //   const notesInput = parent.querySelector(".edit-notes");
 
-    if (newTopic && newNotes) {
-      learnings = learnings.map(l =>
-        l.id === id ? { ...l, topic: newTopic, notes: newNotes } : l
-      );
-    }
-  }
+  //   topicInput.disabled = false;
+  //   notesInput.disabled = false;
+
+  // }
+
+  // // SAVE EDIT
+  // if (e.target.classList.contains("save-learning")) {
+
+  //   const topicInput = parent.querySelector(".edit-topic");
+  //   const notesInput = parent.querySelector(".edit-notes");
+
+  //   learnings = learnings.map(l =>
+  //     l.id === id
+  //       ? {
+  //           ...l,
+  //           topic: topicInput.value,
+  //           notes: notesInput.value
+  //         }
+  //       : l
+  //   );
+
+  //   saveLearnings();
+  //   renderLearnings();
+  // }
 
   saveLearnings();
   renderLearnings();
+
 });
 
 function updateProgress() {
@@ -340,6 +360,8 @@ function updateChart() {
 function renderHeatmap() {
 
   const heatmap = document.getElementById("learningHeatmap");
+    if (!heatmap) return;
+
   heatmap.innerHTML = "";
 
   const today = new Date();
@@ -415,21 +437,24 @@ function renderQuestions() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <div class="question-item" data-id="${item.id}">
-        <input type="checkbox" ${item.revised ? "checked" : ""} class="toggle-revised"/>
+    <div class="question-item" data-id="${item.id}">
 
-        <div>
-          <strong class="${item.revised ? "revised-text" : ""}">
-            ${item.question}
-          </strong>
-          <p>${item.answer}</p>
-        </div>
+    <input type="checkbox" ${item.revised ? "checked" : ""} class="toggle-revised"/>
 
-        <div>
-          <button class="edit-question">Edit</button>
-          <button class="delete-question">Delete</button>
-        </div>
-      </div>
+    <div>
+    <strong class="${item.revised ? "revised-text" : ""}">
+    ${item.question}
+    </strong>
+
+    <p>${item.answer}</p>
+    </div>
+
+    <div>
+    <button class="edit-question">Edit</button>
+    <button class="delete-question">Delete</button>
+    </div>
+
+    </div>
     `;
 
     questionList.appendChild(li);
@@ -568,4 +593,27 @@ undoDeleteBtn.addEventListener("click", () => {
 
   lastDeletedLearning = null;
 
+});
+
+clearCompletedBtn.addEventListener("click", () => {
+
+  const completedCount = learnings.filter(l => l.completed).length;
+
+  if (completedCount === 0) {
+    alert("No completed learnings to remove.");
+    return;
+  }
+
+  const confirmClear = confirm(
+    `Remove ${completedCount} completed learnings?`
+  );
+
+  if (!confirmClear) return;
+
+  learnings = learnings.filter(l => !l.completed);
+
+  saveLearnings();
+  renderLearnings();
+  renderHeatmap();
+  updateChart();
 });

@@ -199,6 +199,15 @@ LEARNING ITEM
   border-radius: 8px;
   cursor: pointer;
 }
+.edit-topic,
+.edit-notes {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.actions button {
+  margin-left: 5px;
+}
 
 .delete-learning,
 .delete-question {
