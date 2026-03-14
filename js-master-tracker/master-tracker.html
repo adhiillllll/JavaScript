@@ -39,10 +39,9 @@
   </div>
   
   <div id="undoContainer" class="undo-box">
-    <span>Item deleted</span>
-    <button id="undoDelete" class="btn-primary">Undo</button>
+    Learning deleted
+    <button id="undoDelete">Undo</button>
   </div>
-
   <main class="dashboard">
 
     <!-- Learning Section -->
@@ -66,7 +65,7 @@
         <option value="newest">Newest</option>
         <option value="oldest">Oldest</option>
       </select>
-      
+
       <button id="clearCompleted" class="btn-primary">
       Clear Completed
       </button>
@@ -91,6 +90,10 @@
       <h2>📈 Learning Chart</h2>
 
       <canvas id="learningChart"></canvas>
+
+      <h3>📅 Weekly Learning</h3>
+      <canvas id="weeklyChart"></canvas>
+      
     </section>
 
     <section class="card heatmap-card">

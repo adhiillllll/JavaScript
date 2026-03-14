@@ -31,6 +31,7 @@ const resetBtn = document.getElementById("resetData");
 const undoContainer = document.getElementById("undoContainer");
 const undoDeleteBtn = document.getElementById("undoDelete");
 const clearCompletedBtn = document.getElementById("clearCompleted");
+const weeklyChartCanvas = document.getElementById("weeklyChart");
 
 // ==========================
 // DATA
@@ -55,6 +56,7 @@ function init() {
   updateStreakUI();
   updateChart();
   renderHeatmap();
+  updateWeeklyChart();
 }
 
 init();
@@ -172,6 +174,7 @@ function renderLearnings() {
   updateStats();  
   renderHeatmap(); 
   updateChart();
+  updateWeeklyChart();
   return;
   }
 
@@ -349,6 +352,41 @@ function updateChart() {
           position: "bottom"
         }
       }
+    }
+  });
+
+}
+
+let weeklyChart;
+
+function updateWeeklyChart() {
+
+  if (!weeklyChartCanvas || typeof Chart === "undefined") return;
+
+  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const counts = [0,0,0,0,0,0,0];
+
+  learnings.forEach(item => {
+    const date = new Date(item.date);
+    const day = date.getDay();
+    counts[day]++;
+  });
+
+  if (weeklyChart) {
+    weeklyChart.destroy();
+  }
+
+  weeklyChart = new Chart(weeklyChartCanvas, {
+    type: "bar",
+    data: {
+      labels: days,
+      datasets: [{
+        label: "Learnings",
+        data: counts
+      }]
+    },
+    options: {
+      responsive: true
     }
   });
 
